@@ -5,30 +5,29 @@ import { cn } from "@/lib/utils"
 import { Marquee } from "@/components/magicui/marquee" 
 
 const agriculturalImages = [
-  { id: 1, url: "/assets/images/backgrounds/background1.png", alt: "African farmer in field" },
-  { id: 2, url: "/assets/images/backgrounds/background2.png", alt: "Livestock cattle grazing" },
-  { id: 3, url: "/assets/images/backgrounds/background3.png", alt: "Agricultural training" },
-  { id: 4, url: "/assets/images/backgrounds/background3.png", alt: "Modern farming technology" },
-  { id: 5, url: "/assets/images/backgrounds/background2.png", alt: "Woman farmer harvesting" },
-  { id: 6, url: "/assets/images/backgrounds/background1.png", alt: "Agricultural consultation" },
-  { id: 7, url: "/assets/images/backgrounds/background2.png", alt: "Young farmers learning" },
-  { id: 8, url: "/assets/images/backgrounds/background3.png", alt: "Smart agriculture tools" },
+  { id: 1, url: "/assets/images/backgrounds/background_1.png", alt: "Agriculteur africain dans un champ" },
+  { id: 2, url: "/assets/images/backgrounds/background_2.png", alt: "Bétail en pâturage" },
+  { id: 3, url: "/assets/images/backgrounds/background_3.png", alt: "Formation agricole" },
+  { id: 4, url: "/assets/images/backgrounds/background_4.png", alt: "Technologie agricole moderne" },
+  { id: 5, url: "/assets/images/backgrounds/background_5.png", alt: "Agricultrice en train de récolter" },
+  { id: 6, url: "/assets/images/backgrounds/background_6.png", alt: "Consultation agricole" },
+  { id: 7, url: "/assets/images/backgrounds/background_7.png", alt: "Jeunes agriculteurs en formation" },
+  { id: 8, url: "/assets/images/backgrounds/background_8.png", alt: "Outils d'agriculture intelligente" },
 ]
 
 const ImageCard = ({ url, alt }: { url: string; alt: string }) => (
   <div
     className={cn(
-      "relative h-64 w-48 cursor-pointer overflow-hidden rounded-lg",
-      "transition-transform hover:scale-105"
+      "relative h-64 w-48 cursor-pointer overflow-hidden rounded-lg border-2 border-[#E0AB6C]/20",
+      "transition-all duration-300 hover:scale-105 hover:border-[#E0AB6C] hover:shadow-lg hover:shadow-[#E0AB6C]/20"
     )}
   >
     <img src={url || "/placeholder.svg"} alt={alt} className="h-full w-full object-cover" />
-    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+    <div className="absolute inset-0 bg-gradient-to-t from-[#001A3B]/80 via-[#001A3B]/20 to-transparent" />
   </div>
 )
 
 export function AgriculturalMarqueeBackground() {
-  // On crée 8 colonnes (une pour chaque image, mais avec décalages)
   const columns = [
     agriculturalImages.slice(0, 2),
     agriculturalImages.slice(2, 4),
@@ -64,11 +63,11 @@ export function AgriculturalMarqueeBackground() {
         ))}
       </div>
 
-      {/* Gradients pour lisser le bord */}
+      {/* Gradients pour lisser les bords */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-background via-background/80 to-transparent"></div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-background to-transparent"></div>
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-background to-transparent"></div>
+      {/* <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-background to-transparent"></div>
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-background to-transparent"></div>  */}
     </div>
   )
 }

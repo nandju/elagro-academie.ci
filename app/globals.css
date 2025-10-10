@@ -38,6 +38,76 @@
   --sidebar-accent-foreground: oklch(0.15 0.02 120);
   --sidebar-border: oklch(0.88 0.02 120);
   --sidebar-ring: oklch(0.45 0.15 145);
+
+  /* les anciens codes */
+    /* ===============================
+     🎓 ELAGRO ACADEMY (principal)
+     #001A3B / #E0AB6C
+     =============================== */
+  --elagro-academy-dark: oklch(0.232 0.056 266.51); /* #001A3B */
+  --elagro-academy-gold: oklch(0.774 0.125 76.71);  /* #E0AB6C */
+
+  /* ===============================
+     🐔 ELAGRO Volaille
+     #9A000D
+     =============================== */
+  --elagro-volaille: oklch(0.441 0.241 23.78); /* rouge vif */
+
+  /* ===============================
+     🐖 ELAGRO Porc
+     #C43F75
+     =============================== */
+  --elagro-porc: oklch(0.588 0.211 352.06); /* rose porcelaine */
+
+  /* ===============================
+     🐇 ELAGRO Lapin
+     #A79A8D
+     =============================== */
+  --elagro-lapin: oklch(0.701 0.046 83.18); /* beige taupe */
+
+  /* ===============================
+     🌾 ELAGRO Culture
+     #269940
+     =============================== */
+  --elagro-culture: oklch(0.658 0.179 149.72); /* vert agricole */
+
+  /* ===============================
+     💰 ELAGRO Vente
+     #FFD463
+     =============================== */
+  --elagro-vente: oklch(0.877 0.149 92.67); /* jaune doré */
+
+  /* ===============================
+     🐟 ELAGRO Poisson
+     #1079CE
+     =============================== */
+  --elagro-poisson: oklch(0.613 0.185 252.83); /* bleu océan */
+
+  /* ===============================
+     🐄 ELAGRO Ruminant
+     #9C6E2F
+     =============================== */
+  --elagro-ruminant: oklch(0.55 0.124 69.35); /* brun terreux */
+
+  /* ===============================
+     🌱 ELAGRO Marché Bio
+     #92278F
+     =============================== */
+  --elagro-marche-bio: oklch(0.44 0.231 317.12); /* violet bio */
+
+  /* ===============================
+     🏢 ELAGRO Entreprise
+     #035B73
+     =============================== */
+  --elagro-entreprise: oklch(0.44 0.102 217.73); /* bleu pétrole */
+
+  /* ===============================
+     🎓 ELAGRO Académie
+     (même palette que principale)
+     =============================== */
+  --elagro-academie-dark: oklch(0.232 0.056 266.51); /* #001A3B */
+  --elagro-academie-gold: oklch(0.774 0.125 76.71);  /* #E0AB6C */
+
 }
 
 .dark {
