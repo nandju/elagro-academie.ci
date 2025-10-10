@@ -12,18 +12,18 @@ export function HeroSection() {
 
 const translations = {
   fr: {
-    headline: "Formation et conseil agricole",
+    headline: "Formation et conseil en élevage",
     subheadline: "Apprenez, progressez, réussissez",
     description:
-      "Rejoignez ELAGRO ACADEMY pour booster vos compétences en agriculture et élevage.",
+      "Rejoignez ELAGRO ACADEMY pour développer vos compétences en élevage et maîtriser les meilleures pratiques pour le bien-être et la productivité animale.",
     emailPlaceholder: "Adresse e-mail",
     cta: "Commencer",
   },
   en: {
-    headline: "Agricultural training and consulting",
+    headline: "Livestock training and consulting",
     subheadline: "Learn, grow, succeed",
     description:
-      "Join ELAGRO ACADEMY to boost your skills in farming and livestock.",
+      "Join ELAGRO ACADEMY to enhance your livestock management skills and master best practices for animal welfare and productivity.",
     emailPlaceholder: "Email address",
     cta: "Get Started",
   },

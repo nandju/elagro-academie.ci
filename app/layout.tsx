@@ -44,10 +44,11 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "ELAGRO ACADEMY | Formation et Conseil Agricole en Ligne",
+  title: "ELAGRO ACADEMY | Formation et Conseil en Élevage",
   description:
-    "Plateforme numérique dédiée à la formation, au conseil et à la certification en agriculture et élevage durables. Accessible à tous les acteurs du monde agro-pastoral en Afrique.",
+    "Plateforme numérique dédiée à la formation, au conseil et à la certification dans le domaine de l’élevage. Découvrez aussi les bonnes pratiques agricoles liées à la production d’aliments pour animaux.",
 };
+
 
 
 export default function RootLayout({
