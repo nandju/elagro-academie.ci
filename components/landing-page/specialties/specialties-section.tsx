@@ -208,7 +208,8 @@ export function SpecialtiesSection({ language = "fr" }: { language?: "en" | "fr"
               {/* Close button */}
               <button
                 onClick={() => setSelectedSpecialty(null)}
-                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-[#001A3B]/80 hover:bg-[#E0AB6C] border border-[#E0AB6C]/30 transition-all duration-300 group"
+                className="absolute top-2 right-2 z-10 p-2 rounded-full bg-[#001A3B] hover:bg-[#E0AB6C] border border-[#E0AB6C] transition-all duration-300 group"
+                // className="absolute top-4 right-4 z-10 p-2 rounded-full bg-[#001A3B]/80 hover:bg-[#E0AB6C] border border-[#E0AB6C]/30 transition-all duration-300 group"
               >
                 <X className="w-5 h-5 text-[#E0AB6C] group-hover:text-[#001A3B]" />
               </button>
