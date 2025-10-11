@@ -141,7 +141,7 @@ export function SpecialtiesSection({ language = "fr" }: { language?: "en" | "fr"
 
   return (
     <>
-      <section className="relative bg-background py-16 md:py-24 lg:py-32">
+      <section className="relative bg-background py-16 md:py-24 lg:py-28">
         <div className="container px-4 md:px-8 lg:px-16">
           <div className="mb-10 md:mb-14">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#001A3B] mb-3">
