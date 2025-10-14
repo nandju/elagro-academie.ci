@@ -5,6 +5,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ChevronRight, X } from "lucide-react"
+import { useTranslation } from "@/lib/translation-context"
 
 interface Specialty {
   id: number
@@ -136,21 +137,20 @@ const specialties: Specialty[] = [
   },
 ]
 
-export function SpecialtiesSection({ language = "fr" }: { language?: "en" | "fr" }) {
+export function SpecialtiesSection() {
+  const { language, t } = useTranslation()
   const [selectedSpecialty, setSelectedSpecialty] = useState<Specialty | null>(null)
 
   return (
     <>
-      <section className="relative bg-background py-16 md:py-24 lg:py-28">
+      <section id="specialties" className="relative bg-background py-16 md:py-24 lg:py-28">
         <div className="container px-4 md:px-8 lg:px-16">
           <div className="mb-10 md:mb-14">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#001A3B] mb-3">
-              {language === "fr" ? "Tendances actuelles" : "Current Trends"}
+              {t.specialtiesTitle}
             </h2>
             <p className="text-base md:text-lg text-[#001A3B]/70 max-w-2xl">
-              {language === "fr" 
-                ? "Découvrez nos formations spécialisées en agriculture et élevage" 
-                : "Discover our specialized training in agriculture and livestock"}
+              {t.specialtiesSubtitle}
             </p>
           </div>
 
@@ -187,7 +187,7 @@ export function SpecialtiesSection({ language = "fr" }: { language?: "en" | "fr"
                         {/* {specialty.title[language]} */}
                       </h3>
                       <div className="flex items-center gap-2 text-sm text-[#E0AB6C] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <span>En savoir plus</span>
+                        <span>{t.learnMore}</span>
                         <ChevronRight className="w-4 h-4" />
                       </div>
                     </div>
@@ -250,10 +250,12 @@ export function SpecialtiesSection({ language = "fr" }: { language?: "en" | "fr"
                   {selectedSpecialty.description[language]}
                 </p>
 
-                <Button size="lg" className="bg-[#E0AB6C] hover:bg-[#E0AB6C]/90 text-[#001A3B] font-semibold px-8 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                  {language === "fr" ? "Commencer la formation" : "Start Training"}
-                  <ChevronRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
-                </Button>
+                <a href="/auth/register">
+                  <Button size="lg" className="bg-[#E0AB6C] hover:bg-[#E0AB6C]/90 text-[#001A3B] font-semibold px-8 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                    {t.startTraining}
+                    <ChevronRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </a>
               </div>
             </div>
           )}

@@ -1,51 +1,105 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ChevronRight, Loader2, CheckCircle2 } from "lucide-react"
+import { ChevronRight, Loader2, CheckCircle2, AlertCircle, X } from "lucide-react"
 import { AgriculturalMarqueeBackground } from "./agricultural-marquee-background"
 import emailjs from '@emailjs/browser'
+import { useTranslation } from "@/lib/translation-context"
+
+// Composant Toast (tu l'as déjà — on réutilise)
+interface ToastProps {
+  type: "success" | "error"
+  message: string
+  onClose: () => void
+}
+
+// Remplacer l'ancienne fonction Toast par celle-ci
+function Toast({ type, message, onClose }: ToastProps) {
+  useEffect(() => {
+    const timer = setTimeout(() => onClose(), 5000)
+    return () => clearTimeout(timer)
+  }, [onClose])
+
+  const isSuccess = type === "success"
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-right-full duration-300">
+      <div
+        className="flex items-start gap-4 rounded-lg p-4 min-w-[320px] max-w-md shadow-xl"
+        role="status"
+        aria-live="polite"
+        style={{ backgroundColor: "#001A3B", border: "1px solid rgba(224,171,108,0.25)" }}
+      >
+        {/* Barre d'accent verticale */}
+        <span
+          className="h-full w-1 rounded-full"
+          style={{ backgroundColor: "#E0AB6C" }}
+        />
+
+        {/* Icône */}
+        <div className="flex-shrink-0 mt-0.5">
+          {isSuccess ? (
+            <CheckCircle2 className="h-6 w-6" style={{ color: "#E0AB6C" }} />
+          ) : (
+            <AlertCircle className="h-6 w-6" style={{ color: "#E0AB6C" }} />
+          )}
+        </div>
+
+        {/* Message */}
+        <p className="flex-1 text-sm font-medium leading-relaxed" style={{ color: "#FFFFFF" }}>
+          {message}
+        </p>
+
+        {/* Bouton fermer */}
+        <button
+          onClick={onClose}
+          className="flex-shrink-0 rounded-md p-1 transition-colors hover:bg-white/10"
+          aria-label="Fermer la notification"
+        >
+          <X className="h-4 w-4" style={{ color: "#FFFFFF" }} />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+
+/* ---------------------------
+   HERO SECTION (avec toasts)
+   --------------------------- */
+type ToastItem = { id: number; type: "success" | "error"; message: string }
 
 export function HeroSection() {
-  const [language, setLanguage] = useState<"fr" | "en">("fr")
+  const { language, t } = useTranslation()
   const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle")
 
-  const translations = {
-    fr: {
-      headline: "Formation et conseil en élevage",
-      subheadline: "Apprenez, progressez, réussissez",
-      description:
-        "Rejoignez ELAGRO ACADEMY pour développer vos compétences en élevage et maîtriser les meilleures pratiques pour le bien-être et la productivité animale.",
-      emailPlaceholder: "Adresse e-mail",
-      cta: "Commencer",
-      success: "Merci ! Nous vous contacterons bientôt.",
-      error: "Une erreur s'est produite. Veuillez réessayer.",
-      invalidEmail: "Veuillez entrer une adresse e-mail valide.",
-    },
-    en: {
-      headline: "Livestock training and consulting",
-      subheadline: "Learn, grow, succeed",
-      description:
-        "Join ELAGRO ACADEMY to enhance your livestock management skills and master best practices for animal welfare and productivity.",
-      emailPlaceholder: "Email address",
-      cta: "Get Started",
-      success: "Thank you! We'll contact you soon.",
-      error: "An error occurred. Please try again.",
-      invalidEmail: "Please enter a valid email address.",
-    },
-  }
-
-  const t = translations[language]
+  // file de toasts
+  const [toasts, setToasts] = useState<ToastItem[]>([])
 
   const validateEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
   }
 
+  // ajoute un toast
+  const addToast = (type: "success" | "error", message: string) => {
+    const id = Date.now() + Math.floor(Math.random() * 1000)
+    setToasts((prev) => [...prev, { id, type, message }])
+  }
+
+  // supprime un toast
+  const removeToast = (id: number) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id))
+  }
+
   const handleSubmit = async () => {
+    // validation front
     if (!validateEmail(email)) {
+      // affiche toast d'erreur
+      addToast("error", t.invalidEmail)
       setStatus("error")
       return
     }
@@ -53,8 +107,10 @@ export function HeroSection() {
     setIsLoading(true)
     setStatus("idle")
 
+    // (optionnel) toast "envoi"
+    addToast("success", t.sending) // notification temporaire — on la retire plus bas
+
     try {
-      // Remplacez ces valeurs par vos propres identifiants EmailJS
       const SERVICE_ID = "service_ac94qct"
       const TEMPLATE_ID = "template_tyc260u"
       const PUBLIC_KEY = "LYaI0cg635rkUCBZN"
@@ -71,17 +127,22 @@ export function HeroSection() {
         PUBLIC_KEY
       )
 
+      // supprime le toast "envoi" précédent (optionnel : on garde simple et ajoute success)
+      addToast("success", t.success)
       setStatus("success")
       setEmail("")
-      
-      setTimeout(() => setStatus("idle"), 5000)
     } catch (error) {
       console.error("Erreur EmailJS:", error)
+      addToast("error", t.error)
       setStatus("error")
-      
-      setTimeout(() => setStatus("idle"), 5000)
     } finally {
       setIsLoading(false)
+      // on nettoie les toasts "sending" après 2s pour éviter doublons
+      setTimeout(() => {
+        setToasts((prev) => prev.filter((toast) => toast.message !== t.sending))
+      }, 1500)
+      // remet le status à idle après affichage
+      setTimeout(() => setStatus("idle"), 5000)
     }
   }
 
@@ -136,20 +197,6 @@ export function HeroSection() {
                   )}
                 </Button>
               </div>
-
-              {/* Messages de statut */}
-              {status === "success" && (
-                <div className="flex items-center justify-center gap-2 text-green-600 font-medium">
-                  <CheckCircle2 className="h-5 w-5" />
-                  <span>{t.success}</span>
-                </div>
-              )}
-              
-              {status === "error" && (
-                <div className="flex items-center justify-center gap-2 text-red-600 font-medium">
-                  <span>{validateEmail(email) ? t.error : t.invalidEmail}</span>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -157,6 +204,16 @@ export function HeroSection() {
 
       {/* Bottom gradient fade */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
+
+      {/* Render toasts (on les superpose en bas à droite) */}
+      {toasts.map((tItem) => (
+        <Toast
+          key={tItem.id}
+          type={tItem.type}
+          message={tItem.message}
+          onClose={() => removeToast(tItem.id)}
+        />
+      ))}
     </section>
   )
 }

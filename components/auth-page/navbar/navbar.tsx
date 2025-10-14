@@ -1,14 +1,23 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Globe } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useTranslation } from "@/lib/translation-context"
 
-export function Navbar() {
-  const { language, setLanguage, t } = useTranslation()
+export function NavbarAuth() {
+  const [language, setLanguage] = useState<"fr" | "en">("fr")
+
+  const translations = {
+    fr: {
+      signIn: "Se connecter",
+    },
+    en: {
+      signIn: "Sign In",
+    },
+  }
 
   return (
     <nav className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-6 md:px-12 lg:px-20">
@@ -51,12 +60,6 @@ export function Navbar() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-
-        <Link href="/auth/login">
-          <Button size="sm" className="bg-[#E0AB6C] hover:bg-[#E0AB6C]/90 text-[#001A3B] font-semibold px-6">
-            {t.signIn}
-          </Button>
-        </Link>
       </div>
     </nav>
   )

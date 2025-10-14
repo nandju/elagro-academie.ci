@@ -1,46 +1,51 @@
+"use client";
+
 import React from 'react';
 import { Tv, Download, Globe, Users } from 'lucide-react';
+import { useTranslation } from '@/lib/translation-context';
 
 export default function ElagroFeaturesSection() {
+  const { t } = useTranslation();
+  
   const features = [
     {
       icon: Tv,
-      title: "Formation en Ligne",
-      description: "Accédez à des formations agricoles de qualité depuis votre smartphone, tablette ou ordinateur, où que vous soyez.",
+      title: t.features[0].title,
+      description: t.features[0].description,
       gradient: "from-[#E0AB6C]/20 to-[#E0AB6C]/5"
     },
     {
       icon: Download,
-      title: "Contenus Téléchargeables",
-      description: "Téléchargez vos cours et guides pratiques pour les consulter hors connexion, à tout moment dans vos champs.",
+      title: t.features[1].title,
+      description: t.features[1].description,
       gradient: "from-[#E0AB6C]/20 to-[#E0AB6C]/5"
     },
     {
       icon: Globe,
-      title: "Expertise Locale",
-      description: "Bénéficiez de conseils adaptés à votre région et de solutions agricoles durables et rentables.",
+      title: t.features[2].title,
+      description: t.features[2].description,
       gradient: "from-[#E0AB6C]/20 to-[#E0AB6C]/5"
     },
     {
       icon: Users,
-      title: "Certification Professionnelle",
-      description: "Obtenez des certifications reconnues et rejoignez une communauté d'agriculteurs innovants.",
+      title: t.features[3].title,
+      description: t.features[3].description,
       gradient: "from-[#E0AB6C]/20 to-[#E0AB6C]/5"
     }
   ];
 
   return (
-    <div className="relative bg-background py-16 md:py-24 lg:py-28">
+    <div id="features" className="relative bg-background py-16 md:py-24 lg:py-28">
         {/* <div className="min-h-screen bg-background py-16 px-4 sm:px-6 lg:px-8"></div> */}
       <div className="container px-4 md:px-8 lg:px-16">
         {/* Header */}
         <div className="mb-10 md:mb-14">
         <div className=" mb-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#001A3B] mb-3">
-            Encore plus de raisons de vous abonner
+            {t.featuresTitle}
           </h2>
           <p className="text-base md:text-lg text-[#001A3B]/70 max-w-2xl">
-            ELAGRO ACADEMY - Votre plateforme d'apprentissage agricole
+            {t.featuresSubtitle}
           </p>
         </div>
         </div>
@@ -80,9 +85,12 @@ export default function ElagroFeaturesSection() {
 
         {/* Call to Action */}
           <div className="text-center mt-16">
-          <button className="bg-[#E0AB6C] hover:bg-[#d49d5a] text-[#001A3B] font-bold text-lg px-12 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-[#E0AB6C]/50">
-            Commencer maintenant
-          </button>
+          <a 
+            href="/auth/register" 
+            className="inline-block bg-[#E0AB6C] hover:bg-[#d49d5a] text-[#001A3B] font-bold text-lg px-12 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-[#E0AB6C]/50"
+          >
+            {t.startNow}
+          </a>
         </div>  
       </div>
     </div>

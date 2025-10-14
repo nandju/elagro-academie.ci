@@ -10,7 +10,7 @@ export default function Home() {
     <main className="relative">
       <Navbar />
       <HeroSection />
-      <SpecialtiesSection language="fr" />
+      <SpecialtiesSection />
       <ElagroFeaturesSection />
       <ElagroFAQSection />
       <ElagroFooterCTA />
