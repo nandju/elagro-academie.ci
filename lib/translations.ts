@@ -59,10 +59,10 @@ export const translations: Record<Language, Translations> = {
     
     // Hero Section
     headline: "Formation et conseil en élevage",
-    subheadline: "Apprenez, progressez, réussissez",
+    subheadline: "J’apprend, je comprend, j’applique, je préserve",
     description: "Rejoignez ELAGRO ACADEMY pour développer vos compétences en élevage et maîtriser les meilleures pratiques pour le bien-être et la productivité animale.",
     emailPlaceholder: "Adresse e-mail",
-    cta: "Commencer",
+    cta: "Rejoins nous",
     success: "Merci ! Nous vous contacterons bientôt.",
     error: "Une erreur s'est produite. Veuillez réessayer.",
     invalidEmail: "Veuillez entrer une adresse e-mail valide.",
@@ -165,10 +165,10 @@ export const translations: Record<Language, Translations> = {
     
     // Hero Section
     headline: "Livestock training and consulting",
-    subheadline: "Learn, grow, succeed",
+    subheadline: "I learn, I understand, I apply, I preserve",
     description: "Join ELAGRO ACADEMY to enhance your livestock management skills and master best practices for animal welfare and productivity.",
     emailPlaceholder: "Email address",
-    cta: "Get Started",
+    cta: "Join us",
     success: "Thank you! We'll contact you soon.",
     error: "An error occurred. Please try again.",
     invalidEmail: "Please enter a valid email address.",

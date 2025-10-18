@@ -157,15 +157,23 @@ export function HeroSection() {
       {/* 3D Marquee Background */}
       <AgriculturalMarqueeBackground />
 
+      {/* Overlay semi-transparent pour lisibilité */}
+       <div className="absolute inset-0 bg-black/5 md:bg-black/15 lg:bg-black/25 backdrop-blur-[2px]" />
+
       {/* Content */}
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-32 text-center">
         <div className="max-w-4xl space-y-8">
-          <h1 className="text-4xl font-extrabold leading-tight text-[#001A3B] md:text-5xl lg:text-6xl text-balance">
-            {t.headline} <span className="block text-[#E0AB6C]">{t.subheadline}</span>
+          
+          <h1 className="text-3xl font-extrabold leading-tight text-[#001A3B] md:text-4xl lg:text-5xl text-balance ">
+            {/* text-4xl font-extrabold leading-tight text-[#001A3B] md:text-5xl lg:text-6xl text-balance drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] */}
+            <div className="drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]">
+              {t.headline}
+            </div>
+             <span className="block text-[#E0AB6C]">{t.subheadline}</span>
           </h1>
 
           <div className="mx-auto max-w-2xl space-y-4">
-            <p className="text-base text-[#001A3B] md:text-lg font-bold">{t.description}</p>
+            <p className="text-base text-[#001A3B] md:text-lg font-bold drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]">{t.description}</p>
 
             <div className="space-y-3">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
