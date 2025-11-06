@@ -12,15 +12,18 @@ interface Specialty {
   title: {
     en: string
     fr: string
+    es?: string
   }
   description: {
     en: string
     fr: string
+    es?: string
   }
   image: string
   tags: {
     en: string[]
     fr: string[]
+    es?: string[]
   }
   level: string
   duration: string
@@ -141,6 +144,26 @@ export function SpecialtiesSection() {
   const { language, t } = useTranslation()
   const [selectedSpecialty, setSelectedSpecialty] = useState<Specialty | null>(null)
 
+  // Helper function to get localized text with fallback
+  const getLocalizedText = <T extends { en: string; fr: string; es?: string }>(
+    obj: T,
+    lang: string
+  ): string => {
+    if (lang === 'es' && obj.es) return obj.es
+    if (lang === 'fr') return obj.fr
+    return obj.en
+  }
+
+  // Helper function to get localized tags with fallback
+  const getLocalizedTags = (
+    tags: { en: string[]; fr: string[]; es?: string[] },
+    lang: string
+  ): string[] => {
+    if (lang === 'es' && tags.es) return tags.es
+    if (lang === 'fr') return tags.fr
+    return tags.en
+  }
+
   return (
     <>
       <section id="specialties" className="relative bg-background py-16 md:py-24 lg:py-28">
@@ -168,7 +191,7 @@ export function SpecialtiesSection() {
                     <div className="absolute inset-0">
                       <img
                         src={specialty.image || "/placeholder.svg"}
-                        alt={specialty.title[language]}
+                        alt={getLocalizedText(specialty.title, language)}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#001A3B]/95 via-[#001A3B]/60 to-transparent" />
@@ -218,7 +241,7 @@ export function SpecialtiesSection() {
               <div className="relative h-[280px] md:h-[380px] overflow-hidden">
                 <img
                   src={selectedSpecialty.image || "/placeholder.svg"}
-                  alt={selectedSpecialty.title[language]}
+                  alt={getLocalizedText(selectedSpecialty.title, language)}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#001A3B] via-[#001A3B]/70 to-transparent" />
@@ -235,7 +258,7 @@ export function SpecialtiesSection() {
                     <Badge variant="secondary" className="bg-[#E0AB6C] text-[#001A3B] font-semibold px-3 py-1 text-sm">
                       {selectedSpecialty.level}
                     </Badge>
-                    {selectedSpecialty.tags[language].map((tag, index) => (
+                    {getLocalizedTags(selectedSpecialty.tags, language).map((tag, index) => (
                       <Badge key={index} variant="outline" className="border-[#E0AB6C]/50 text-[#FFFFFF] bg-[#001A3B]/60 backdrop-blur-sm px-3 py-1 text-sm">
                         {tag}
                       </Badge>
@@ -247,7 +270,7 @@ export function SpecialtiesSection() {
               {/* Content */}
               <div className="p-6 md:p-10 bg-[#001A3B]/98 backdrop-blur-xl overflow-hidden">
                 <p className="text-base md:text-lg text-[#FFFFFF]/80 leading-relaxed mb-8">
-                  {selectedSpecialty.description[language]}
+                  {getLocalizedText(selectedSpecialty.description, language)}
                 </p>
 
                 <a href="/auth/register">

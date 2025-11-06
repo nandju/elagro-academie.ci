@@ -17,7 +17,7 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
   // Load language from localStorage on mount
   useEffect(() => {
     const savedLanguage = localStorage.getItem('elagro-language') as Language;
-    if (savedLanguage && (savedLanguage === 'fr' || savedLanguage === 'en')) {
+    if (savedLanguage && (savedLanguage === 'fr' || savedLanguage === 'en' || savedLanguage === 'es')) {
       setLanguage(savedLanguage);
     }
   }, []);

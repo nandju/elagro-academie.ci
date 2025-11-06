@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { TranslationProvider } from "@/lib/translation-context";
+import PageWrapper from "@/components/loader-page/page-wrapper";
 // import Footer from "@/components/footer";
 // import Navbar from "@/components/navbar";
 
@@ -64,11 +65,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}
       >
         <TranslationProvider>
-          <div className="font-poppins max-w-screen-2xl mx-auto ">
+          <div className="max-w-screen-2xl mx-auto" style={{ fontFamily: 'var(--poppins), system-ui, sans-serif' }}>
+          <PageWrapper>
               {/* <Navbar /> */}
                {children}
                {/* <Footer /> */}
                <Toaster />
+          </PageWrapper>
           </div>
         </TranslationProvider>
       </body>

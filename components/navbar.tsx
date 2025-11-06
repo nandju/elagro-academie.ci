@@ -33,7 +33,7 @@ export function Navbar() {
               className="gap-2 border border-[#E0AB6C]/30 bg-[#001A3B]/10 backdrop-blur-sm hover:bg-[#001A3B]/20 text-[#FFFFFF]"
             >
               <Globe className="h-4 w-4 text-[#E0AB6C]" />
-              <span className="font-medium md:block hidden">{language === "fr" ? "Français" : "English"}</span>
+              <span className="font-medium md:block hidden">{language === "fr" ? "Français" : language === "en" ? "English" : "Español"}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-[#001A3B]/95 backdrop-blur-sm border-[#E0AB6C]/30">
@@ -49,10 +49,16 @@ export function Navbar() {
             >
               English
             </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={() => setLanguage("es")} 
+              className="cursor-pointer text-[#FFFFFF] hover:bg-[#E0AB6C]/20 focus:bg-[#E0AB6C]/20"
+            >
+              Español
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Link href="/auth/login">
+        <Link href="/login">
           <Button size="sm" className="bg-[#E0AB6C] hover:bg-[#E0AB6C]/90 text-[#001A3B] font-semibold px-6">
             {t.signIn}
           </Button>

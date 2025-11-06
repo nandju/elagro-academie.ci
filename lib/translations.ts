@@ -1,4 +1,4 @@
-export type Language = "fr" | "en";
+export type Language = "fr" | "en" | "es";
 
 export interface Translations {
   // Navigation
@@ -264,5 +264,111 @@ export const translations: Record<Language, Translations> = {
     companyInfo: "ELAGRO ACADEMY Côte d'Ivoire",
     reCAPTCHA: "This page is protected by Google reCAPTCHA to ensure you are not a robot.",
     learnMoreLink: "Learn more."
+  },
+  es: {
+    // Navigation
+    signIn: "Iniciar sesión",
+    
+    // Hero Section
+    headline: "Formación y consultoría en ganadería",
+    subheadline: "Aprendo, comprendo, aplico, preservo",
+    description: "Únete a ELAGRO ACADEMY para desarrollar tus habilidades en ganadería y dominar las mejores prácticas para el bienestar y la productividad animal.",
+    emailPlaceholder: "Correo electrónico",
+    cta: "Únete a nosotros",
+    success: "¡Gracias! Nos pondremos en contacto contigo pronto.",
+    error: "Ha ocurrido un error. Por favor, inténtalo de nuevo.",
+    invalidEmail: "Por favor, introduce un correo electrónico válido.",
+    sending: "Enviando...",
+    
+    // Features Section
+    featuresTitle: "Aún más razones para suscribirte",
+    featuresSubtitle: "ELAGRO ACADEMY - Tu plataforma de aprendizaje agrícola",
+    features: [
+      {
+        title: "Formación en línea",
+        description: "Accede a formación agrícola de calidad desde tu smartphone, tablet u ordenador, dondequiera que estés."
+      },
+      {
+        title: "Contenido descargable",
+        description: "Descarga tus cursos y guías prácticas para consultarlos sin conexión, en cualquier momento en tus campos."
+      },
+      {
+        title: "Experiencia local",
+        description: "Benefíciate de consejos adaptados a tu región y soluciones agrícolas sostenibles y rentables."
+      },
+      {
+        title: "Certificación profesional",
+        description: "Obtén certificaciones reconocidas y únete a una comunidad de agricultores innovadores."
+      }
+    ],
+    startNow: "Empezar ahora",
+    
+    // Specialties Section
+    specialtiesTitle: "Tendencias actuales",
+    specialtiesSubtitle: "Descubre nuestras formaciones especializadas en agricultura y ganadería",
+    learnMore: "Saber más",
+    startTraining: "Empezar la formación",
+    
+    // FAQ Section
+    faqTitle: "Preguntas frecuentes",
+    faqs: [
+      {
+        question: "¿Qué es ELAGRO ACADEMY?",
+        answer: "ELAGRO ACADEMY es una plataforma digital de aprendizaje, consultoría y certificación dedicada a los actores del sector agrícola y ganadero. Combina conocimiento científico, experiencia local y tecnologías innovadoras para acompañar a los productores hacia una agricultura sostenible, rentable y respetuosa de la salud."
+      },
+      {
+        question: "¿Cuánto cuesta la suscripción a ELAGRO ACADEMY?",
+        answer: "Ofrecemos varios planes de suscripción adaptados a tus necesidades: un plan mensual, un plan trimestral con descuento y un plan anual con la mejor relación calidad-precio. Contáctanos para descubrir la oferta que se adapta a tu explotación."
+      },
+      {
+        question: "¿Dónde puedo acceder a las formaciones?",
+        answer: "Puedes acceder a ELAGRO ACADEMY desde cualquier dispositivo con conexión a Internet: smartphone, tablet u ordenador. También descarga nuestros contenidos para consultarlos sin conexión directamente desde tus campos."
+      },
+      {
+        question: "¿Cómo puedo cancelar mi suscripción?",
+        answer: "Puedes cancelar tu suscripción en cualquier momento desde tu espacio personal en la configuración de la cuenta. No se aplican cargos por cancelación y mantienes el acceso hasta el final del período pagado."
+      },
+      {
+        question: "¿Qué formaciones puedo seguir en ELAGRO ACADEMY?",
+        answer: "Nuestro catálogo ofrece formaciones en agricultura sostenible, técnicas de ganadería, gestión de explotaciones, agroecología, uso de fertilizantes naturales, salud animal, transformación de productos agrícolas y mucho más. Se añaden nuevos contenidos regularmente."
+      },
+      {
+        question: "¿Las certificaciones están reconocidas oficialmente?",
+        answer: "Sí, nuestras certificaciones están reconocidas por organizaciones agrícolas asociadas y valoran tu experiencia profesional. Atestiguan tus competencias adquiridas y pueden mejorar tu credibilidad ante compradores e instituciones."
+      }
+    ],
+    
+    // Footer
+    footerCta: "Comenzar",
+    footerDescription: "¿Listo para desarrollar tus habilidades en ganadería? Introduce tu correo electrónico para suscribirte o reactivar tu suscripción.",
+    contactUs: "¿Preguntas? Contáctanos.",
+    footerLinks: {
+      column1: [
+        { label: 'Preguntas frecuentes', href: '#faq' },
+        { label: 'Relaciones con socios', href: '#partners' },
+        { label: 'Privacidad', href: '#privacy' },
+        { label: 'Prueba de conexión', href: '/auth/login' }
+      ],
+      column2: [
+        { label: 'Centro de ayuda', href: '/help' },
+        { label: 'Empleo', href: '/careers' },
+        { label: 'Preferencias de cookies', href: '#cookies' },
+        { label: 'Información legal', href: '#legal' }
+      ],
+      column3: [
+        { label: 'Cuenta', href: '/auth/login' },
+        { label: 'Modalidades de aprendizaje', href: '#learning' },
+        { label: 'Avisos legales', href: '#terms' },
+        { label: 'Solo en ELAGRO ACADEMY', href: '#exclusive' }
+      ],
+      column4: [
+        { label: 'Prensa', href: '/press' },
+        { label: 'Términos de uso', href: '#terms' },
+        { label: 'Contacta con nosotros', href: '/contact' }
+      ]
+    },
+    companyInfo: "ELAGRO ACADEMY Costa de Marfil",
+    reCAPTCHA: "Esta página está protegida por Google reCAPTCHA para asegurarnos de que no eres un robot.",
+    learnMoreLink: "Saber más."
   }
 };

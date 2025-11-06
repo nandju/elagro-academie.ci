@@ -1,227 +1,120 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
+import { ChevronDown, Award, PlayCircle, Users, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ChevronRight, Loader2, CheckCircle2, AlertCircle, X } from "lucide-react"
-import { AgriculturalMarqueeBackground } from "./agricultural-marquee-background"
-import emailjs from '@emailjs/browser'
-import { useTranslation } from "@/lib/translation-context"
 
-// Composant Toast (tu l'as déjà — on réutilise)
-interface ToastProps {
-  type: "success" | "error"
-  message: string
-  onClose: () => void
-}
-
-// Remplacer l'ancienne fonction Toast par celle-ci
-function Toast({ type, message, onClose }: ToastProps) {
-  useEffect(() => {
-    const timer = setTimeout(() => onClose(), 5000)
-    return () => clearTimeout(timer)
-  }, [onClose])
-
-  const isSuccess = type === "success"
+export default function HeroLandingPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isLangOpen, setIsLangOpen] = useState(false)
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-right-full duration-300">
-      <div
-        className="flex items-start gap-4 rounded-lg p-4 min-w-[320px] max-w-md shadow-xl"
-        role="status"
-        aria-live="polite"
-        style={{ backgroundColor: "#001A3B", border: "1px solid rgba(224,171,108,0.25)" }}
-      >
-        {/* Barre d'accent verticale */}
-        <span
-          className="h-full w-1 rounded-full"
-          style={{ backgroundColor: "#E0AB6C" }}
-        />
-
-        {/* Icône */}
-        <div className="flex-shrink-0 mt-0.5">
-          {isSuccess ? (
-            <CheckCircle2 className="h-6 w-6" style={{ color: "#E0AB6C" }} />
-          ) : (
-            <AlertCircle className="h-6 w-6" style={{ color: "#E0AB6C" }} />
-          )}
-        </div>
-
-        {/* Message */}
-        <p className="flex-1 text-sm font-medium leading-relaxed" style={{ color: "#FFFFFF" }}>
-          {message}
-        </p>
-
-        {/* Bouton fermer */}
-        <button
-          onClick={onClose}
-          className="flex-shrink-0 rounded-md p-1 transition-colors hover:bg-white/10"
-          aria-label="Fermer la notification"
-        >
-          <X className="h-4 w-4" style={{ color: "#FFFFFF" }} />
-        </button>
+    <section className="relative min-h-screen bg-white overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 50 Q25 20, 50 50 T100 50' stroke='%23001A3B' fill='none'/%3E%3Cpath d='M0 70 Q25 40, 50 70 T100 70' stroke='%23001A3B' fill='none'/%3E%3C/svg%3E")`,
+          backgroundSize: '200px 200px'
+        }} />
       </div>
-    </div>
-  )
-}
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
 
-/* ---------------------------
-   HERO SECTION (avec toasts)
-   --------------------------- */
-type ToastItem = { id: number; type: "success" | "error"; message: string }
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-screen py-20 lg:py-0">
+          {/* Left Content */}
+          <div className="pt-12 lg:pt-12">
+            
 
-export function HeroSection() {
-  const { language, t } = useTranslation()
-  const [email, setEmail] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle")
+            {/* Main Headline */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#001A3B] leading-tight mb-6">
+              Formation & Conseil en{" "}
+              <span className="relative">
+                <span className="text-[#E0AB6C]">Élevage</span>
+                <span className="absolute bottom-2 left-0 w-full h-3 bg-[#E0AB6C]/30 -z-10"></span>
+              </span>
+              <br />
+              et Agriculture{" "}
+              <span className="text-[#001A3B]">Professionnels</span>
+            </h1>
 
-  // file de toasts
-  const [toasts, setToasts] = useState<ToastItem[]>([])
+            {/* Sub-headline */}
+            <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-lg">
+              Développez vos compétences en élevage et agriculture avec nos formations certifiées et conseils d'experts.
+            </p>
 
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-  }
+            {/* CTA Button */}
+            <Button className="bg-[#E0AB6C] hover:bg-[#E0AB6C]/90 text-[#001A3B] font-semibold px-8 py-6 rounded-lg text-lg mb-12 shadow-lg hover:shadow-xl transition-all">
+              Commencer maintenant
+              <span className="ml-2">→</span>
+            </Button>
 
-  // ajoute un toast
-  const addToast = (type: "success" | "error", message: string) => {
-    const id = Date.now() + Math.floor(Math.random() * 1000)
-    setToasts((prev) => [...prev, { id, type, message }])
-  }
-
-  // supprime un toast
-  const removeToast = (id: number) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id))
-  }
-
-  const handleSubmit = async () => {
-    // validation front
-    if (!validateEmail(email)) {
-      // affiche toast d'erreur
-      addToast("error", t.invalidEmail)
-      setStatus("error")
-      return
-    }
-
-    setIsLoading(true)
-    setStatus("idle")
-
-    // (optionnel) toast "envoi"
-    addToast("success", t.sending) // notification temporaire — on la retire plus bas
-
-    try {
-      const SERVICE_ID = "service_ac94qct"
-      const TEMPLATE_ID = "template_tyc260u"
-      const PUBLIC_KEY = "LYaI0cg635rkUCBZN"
-
-      await emailjs.send(
-        SERVICE_ID,
-        TEMPLATE_ID,
-        {
-          user_email: email,
-          language: language,
-          from_name: "ELAGRO ACADEMY",
-          message: `Nouvelle inscription depuis le site web (langue: ${language})`,
-        },
-        PUBLIC_KEY
-      )
-
-      // supprime le toast "envoi" précédent (optionnel : on garde simple et ajoute success)
-      addToast("success", t.success)
-      setStatus("success")
-      setEmail("")
-    } catch (error) {
-      console.error("Erreur EmailJS:", error)
-      addToast("error", t.error)
-      setStatus("error")
-    } finally {
-      setIsLoading(false)
-      // on nettoie les toasts "sending" après 2s pour éviter doublons
-      setTimeout(() => {
-        setToasts((prev) => prev.filter((toast) => toast.message !== t.sending))
-      }, 1500)
-      // remet le status à idle après affichage
-      setTimeout(() => setStatus("idle"), 5000)
-    }
-  }
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && email) {
-      handleSubmit()
-    }
-  }
-
-  return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-background">
-      {/* 3D Marquee Background */}
-      <AgriculturalMarqueeBackground />
-
-      {/* Overlay semi-transparent pour lisibilité */}
-       <div className="absolute inset-0 bg-black/5 md:bg-black/15 lg:bg-black/25 backdrop-blur-[2px]" />
-
-      {/* Content */}
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-32 text-center">
-        <div className="max-w-4xl space-y-8">
-          
-          <h1 className="text-3xl font-extrabold leading-tight text-[#001A3B] md:text-4xl lg:text-5xl text-balance ">
-            {/* text-4xl font-extrabold leading-tight text-[#001A3B] md:text-5xl lg:text-6xl text-balance drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] */}
-            <div className="drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]">
-              {t.headline}
+            {/* Statistics */}
+            <div className="flex flex-wrap gap-8 md:gap-12">
+              <div>
+                <div className="text-3xl md:text-4xl font-bold text-[#001A3B] mb-1">4.8+</div>
+                <div className="text-sm text-gray-600">Note moyenne</div>
+              </div>
+              <div>
+                <div className="text-3xl md:text-4xl font-bold text-[#001A3B] mb-1">20,000+</div>
+                <div className="text-sm text-gray-600">Apprenants</div>
+              </div>
+              <div>
+                <div className="text-3xl md:text-4xl font-bold text-[#001A3B] mb-1">30+</div>
+                <div className="text-sm text-gray-600">Formations</div>
+              </div>
             </div>
-             <span className="block text-[#E0AB6C]">{t.subheadline}</span>
-          </h1>
 
-          <div className="mx-auto max-w-2xl space-y-4">
-            <p className="text-base text-[#001A3B] md:text-lg font-bold drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]">{t.description}</p>
+            {/* Logo - Bottom Left */}
+            <div className="mt-16 flex items-center gap-2 opacity-50">
+              <span className="text-lg font-bold text-gray-400">Elagro Academy</span>
+              <div className="w-2 h-2 rounded-full bg-[#E0AB6C]"></div>
+            </div>
+          </div>
 
-            <div className="space-y-3">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
-                <Input
-                  type="email"
-                  placeholder={t.emailPlaceholder}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  disabled={isLoading}
-                  className="h-14 bg-[#FFFFFF]/90 backdrop-blur-sm border-[#E0AB6C]/30 text-[#001A3B] placeholder:text-[#001A3B]/60 text-base sm:min-w-[320px] focus:border-[#E0AB6C] focus:ring-[#E0AB6C] disabled:opacity-50"
+          {/* Right Panel - Hero Image with Feature Bubbles */}
+          <div className="relative">
+            <div className="relative">
+              {/* Main Hero Image */}
+              <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-2xl">
+                <img
+                  src="/assets/images/backgrounds/background_1.png"
+                  alt="Formation en élevage"
+                  className="w-full h-full object-cover"
                 />
-                <Button
-                  onClick={handleSubmit}
-                  size="lg"
-                  disabled={isLoading || !email}
-                  className="h-14 bg-[#E0AB6C] hover:bg-[#E0AB6C]/90 text-[#001A3B] font-semibold px-8 gap-2 group shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      {language === "fr" ? "Envoi..." : "Sending..."}
-                    </>
-                  ) : (
-                    <>
-                      {t.cta}
-                      <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                    </>
-                  )}
-                </Button>
+                {/* Overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#001A3B]/20 to-transparent"></div>
+              </div>
+
+              {/* Feature Bubbles */}
+              {/* Top Bubble - Reward */}
+              <div className="absolute top-4 left-4 md:top-16 md:left-8 bg-white rounded-xl px-3 py-2 md:px-4 md:py-3 shadow-lg flex items-center gap-2 md:gap-3 max-w-[180px] md:max-w-[200px]" style={{ animation: 'float 3s ease-in-out infinite' }}>
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                  <Award className="w-4 h-4 md:w-5 md:h-5 text-red-600" />
+                </div>
+                <p className="text-xs md:text-sm font-medium text-[#001A3B]">Récompenses à chaque étape</p>
+              </div>
+
+              {/* Middle Bubble - Courses */}
+              <div className="absolute top-1/2 left-2 md:left-4 -translate-y-1/2 bg-white rounded-xl px-3 py-2 md:px-4 md:py-3 shadow-lg flex items-center gap-2 md:gap-3 max-w-[180px] md:max-w-[200px]" style={{ animation: 'float 3s ease-in-out infinite 1.5s' }}>
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                  <PlayCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
+                </div>
+                <p className="text-xs md:text-sm font-medium text-[#001A3B]">Formations à la demande</p>
+              </div>
+
+              {/* Bottom Bubble - Experts */}
+              <div className="absolute bottom-4 left-4 md:bottom-20 md:left-8 bg-white rounded-xl px-3 py-2 md:px-4 md:py-3 shadow-lg flex items-center gap-2 md:gap-3 max-w-[180px] md:max-w-[200px]" style={{ animation: 'float 3s ease-in-out infinite' }}>
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                  <Users className="w-4 h-4 md:w-5 md:h-5 text-purple-600" />
+                </div>
+                <p className="text-xs md:text-sm font-medium text-[#001A3B]">Apprenez des experts</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom gradient fade */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
-
-      {/* Render toasts (on les superpose en bas à droite) */}
-      {toasts.map((tItem) => (
-        <Toast
-          key={tItem.id}
-          type={tItem.type}
-          message={tItem.message}
-          onClose={() => removeToast(tItem.id)}
-        />
-      ))}
     </section>
   )
 }

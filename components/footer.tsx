@@ -248,11 +248,11 @@ export default function ElagroFooterCTA() {
           {/* Language Selector */}
           <div className="mb-8">
             <button
-              onClick={() => setLanguage(language === 'fr' ? 'en' : 'fr')}
+              onClick={() => setLanguage(language === 'fr' ? 'en' : language === 'en' ? 'es' : 'fr')}
               className="flex items-center gap-2 bg-[#001A3B] border border-gray-600 rounded px-4 py-2 text-white hover:border-[#E0AB6C] transition-colors duration-200"
             >
               <Globe className="w-4 h-4" />
-              <span className="text-sm">{language === 'fr' ? 'Français' : 'English'}</span>
+              <span className="text-sm">{language === 'fr' ? 'Français' : language === 'en' ? 'English' : 'Español'}</span>
             </button>
           </div>
 
