@@ -109,7 +109,7 @@ export default function FooterLandingPage() {
             <div className="flex items-center gap-2 mb-4">
               <div className="relative w-20 h-20">
                 <Image 
-                  src="/assets/images/logo.png" 
+                  src="/assets/images/logo_blanc&noir.png" 
                   alt="Logo Elagro Academy" 
                   width={100} 
                   height={100} 

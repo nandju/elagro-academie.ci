@@ -50,6 +50,55 @@ export interface Translations {
   companyInfo: string;
   reCAPTCHA: string;
   learnMoreLink: string;
+  
+  // Pricing Section
+  pricingTitle: string;
+  pricingSubtitle: string;
+  pricingPlans: {
+    free: {
+      name: string;
+      price: string;
+      period: string;
+      description: string;
+      features: string[];
+      cta: string;
+    };
+    pro: {
+      name: string;
+      price: string;
+      period: string;
+      description: string;
+      features: string[];
+      cta: string;
+      badge?: string;
+      trial?: string;
+    };
+    enterprise: {
+      name: string;
+      price: string;
+      period: string;
+      description: string;
+      features: string[];
+      cta: string;
+    };
+  };
+  comparePlansTitle: string;
+  comparePlansSubtitle: string;
+  compareFeaturesLabel: string;
+  compareFeatures: {
+    label: string;
+    free: string | boolean;
+    pro: string | boolean;
+    enterprise: string | boolean;
+  }[];
+  complianceTitle: string;
+  complianceSubtitle: string;
+  complianceCards: {
+    title: string;
+    badge: string;
+    description: string;
+    cta: string;
+  }[];
 }
 
 export const translations: Record<Language, Translations> = {
@@ -157,7 +206,88 @@ export const translations: Record<Language, Translations> = {
     },
     companyInfo: "ELAGRO ACADEMY Côte d'Ivoire",
     reCAPTCHA: "Cette page est protégée par Google reCAPTCHA pour nous assurer que vous n'êtes pas un robot.",
-    learnMoreLink: "En savoir plus."
+    learnMoreLink: "En savoir plus.",
+    
+    // Pricing Section
+    pricingTitle: "Tarifs",
+    pricingSubtitle: "Choisissez le plan qui correspond à vos besoins et développez vos compétences en élevage",
+    pricingPlans: {
+      free: {
+        name: "Gratuit",
+        price: "0",
+        period: "par mois",
+        description: "Découvrez la plateforme et explorez les formations de base",
+        features: [
+          "Accès à 3 formations gratuites",
+          "Contenus téléchargeables limités",
+          "Support communautaire",
+          "Certification non incluse"
+        ],
+        cta: "Commencer gratuitement"
+      },
+      pro: {
+        name: "Professionnel",
+        price: "15 000",
+        period: "par mois",
+        description: "Accès complet à toutes les formations et certifications",
+        features: [
+          "Accès illimité à toutes les formations",
+          "Tous les contenus téléchargeables",
+          "Certifications professionnelles incluses",
+          "Support email prioritaire",
+          "Consultations mensuelles avec experts"
+        ],
+        cta: "Démarrer l'essai gratuit",
+        badge: "Populaire",
+        trial: "Essai gratuit de 30 jours"
+      },
+      enterprise: {
+        name: "Entreprise",
+        price: "Sur mesure",
+        period: "",
+        description: "Solution complète pour équipes et organisations agricoles",
+        features: [
+          "Tout du plan Professionnel",
+          "Gestion multi-utilisateurs",
+          "Formations personnalisées",
+          "Support dédié 24/7",
+          "Intégration et onboarding",
+          "Rapports et analytics avancés"
+        ],
+        cta: "Contacter les ventes"
+      }
+    },
+    comparePlansTitle: "Comparer les plans",
+    comparePlansSubtitle: "Trouvez celui qui vous convient",
+    compareFeaturesLabel: "Fonctionnalités",
+    compareFeatures: [
+      { label: "Formations incluses", free: "3 formations", pro: "Illimité", enterprise: "Illimité + personnalisées" },
+      { label: "Contenus téléchargeables", free: "Limité", pro: "Illimité", enterprise: "Illimité" },
+      { label: "Certifications", free: false, pro: true, enterprise: true },
+      { label: "Support email", free: false, pro: true, enterprise: true },
+      { label: "Support prioritaire", free: false, pro: false, enterprise: true },
+      { label: "Consultations experts", free: false, pro: "1/mois", enterprise: "Illimité" },
+      { label: "Multi-utilisateurs", free: false, pro: false, enterprise: true },
+      { label: "Formations personnalisées", free: false, pro: false, enterprise: true },
+      { label: "Onboarding dédié", free: false, pro: false, enterprise: true },
+      { label: "Analytics et rapports", free: false, pro: false, enterprise: true }
+    ],
+    complianceTitle: "Conformité et Certifications",
+    complianceSubtitle: "Des standards reconnus pour votre développement professionnel",
+    complianceCards: [
+      {
+        title: "Certifications Professionnelles",
+        badge: "Tous les plans",
+        description: "Obtenez des certifications reconnues par les organisations agricoles partenaires. Ces certifications attestent de vos compétences acquises et améliorent votre crédibilité professionnelle.",
+        cta: "En savoir plus"
+      },
+      {
+        title: "Standards de Qualité",
+        badge: "Entreprise",
+        description: "Conformité aux normes agricoles internationales et locales. Support pour la certification de vos exploitations selon les standards de qualité et de durabilité.",
+        cta: "Contacter les ventes"
+      }
+    ]
   },
   en: {
     // Navigation
@@ -263,7 +393,88 @@ export const translations: Record<Language, Translations> = {
     },
     companyInfo: "ELAGRO ACADEMY Côte d'Ivoire",
     reCAPTCHA: "This page is protected by Google reCAPTCHA to ensure you are not a robot.",
-    learnMoreLink: "Learn more."
+    learnMoreLink: "Learn more.",
+    
+    // Pricing Section
+    pricingTitle: "Pricing",
+    pricingSubtitle: "Choose the plan that fits your needs and develop your livestock skills",
+    pricingPlans: {
+      free: {
+        name: "Free",
+        price: "0",
+        period: "per month",
+        description: "Explore the platform and access basic training courses",
+        features: [
+          "Access to 3 free courses",
+          "Limited downloadable content",
+          "Community support",
+          "Certification not included"
+        ],
+        cta: "Get Started"
+      },
+      pro: {
+        name: "Pro",
+        price: "15,000",
+        period: "per month",
+        description: "Full access to all training courses and certifications",
+        features: [
+          "Unlimited access to all courses",
+          "All downloadable content",
+          "Professional certifications included",
+          "Priority email support",
+          "Monthly expert consultations"
+        ],
+        cta: "Start Free Trial",
+        badge: "Popular",
+        trial: "Try Pro free for 30 days"
+      },
+      enterprise: {
+        name: "Enterprise",
+        price: "Custom",
+        period: "",
+        description: "Complete solution for teams and agricultural organizations",
+        features: [
+          "Everything in Pro plan",
+          "Multi-user management",
+          "Customized training",
+          "24/7 dedicated support",
+          "Integration and onboarding",
+          "Advanced reports and analytics"
+        ],
+        cta: "Contact Sales"
+      }
+    },
+    comparePlansTitle: "Compare plans",
+    comparePlansSubtitle: "Find one that's right for you",
+    compareFeaturesLabel: "Features",
+    compareFeatures: [
+      { label: "Courses included", free: "3 courses", pro: "Unlimited", enterprise: "Unlimited + Custom" },
+      { label: "Downloadable content", free: "Limited", pro: "Unlimited", enterprise: "Unlimited" },
+      { label: "Certifications", free: false, pro: true, enterprise: true },
+      { label: "Email support", free: false, pro: true, enterprise: true },
+      { label: "Priority support", free: false, pro: false, enterprise: true },
+      { label: "Expert consultations", free: false, pro: "1/month", enterprise: "Unlimited" },
+      { label: "Multi-users", free: false, pro: false, enterprise: true },
+      { label: "Customized training", free: false, pro: false, enterprise: true },
+      { label: "Dedicated onboarding", free: false, pro: false, enterprise: true },
+      { label: "Analytics and reports", free: false, pro: false, enterprise: true }
+    ],
+    complianceTitle: "Compliance & Certifications",
+    complianceSubtitle: "Recognized standards for your professional development",
+    complianceCards: [
+      {
+        title: "Professional Certifications",
+        badge: "All plans",
+        description: "Get certifications recognized by partner agricultural organizations. These certifications attest to your acquired skills and enhance your professional credibility.",
+        cta: "Learn more"
+      },
+      {
+        title: "Quality Standards",
+        badge: "Enterprise",
+        description: "Compliance with international and local agricultural standards. Support for certifying your operations according to quality and sustainability standards.",
+        cta: "Contact Sales"
+      }
+    ]
   },
   es: {
     // Navigation
@@ -369,6 +580,87 @@ export const translations: Record<Language, Translations> = {
     },
     companyInfo: "ELAGRO ACADEMY Costa de Marfil",
     reCAPTCHA: "Esta página está protegida por Google reCAPTCHA para asegurarnos de que no eres un robot.",
-    learnMoreLink: "Saber más."
+    learnMoreLink: "Saber más.",
+    
+    // Pricing Section
+    pricingTitle: "Precios",
+    pricingSubtitle: "Elige el plan que se adapte a tus necesidades y desarrolla tus habilidades en ganadería",
+    pricingPlans: {
+      free: {
+        name: "Gratis",
+        price: "0",
+        period: "por mes",
+        description: "Explora la plataforma y accede a cursos de formación básicos",
+        features: [
+          "Acceso a 3 cursos gratuitos",
+          "Contenido descargable limitado",
+          "Soporte comunitario",
+          "Certificación no incluida"
+        ],
+        cta: "Comenzar"
+      },
+      pro: {
+        name: "Profesional",
+        price: "15,000",
+        period: "por mes",
+        description: "Acceso completo a todos los cursos de formación y certificaciones",
+        features: [
+          "Acceso ilimitado a todos los cursos",
+          "Todo el contenido descargable",
+          "Certificaciones profesionales incluidas",
+          "Soporte por email prioritario",
+          "Consultas mensuales con expertos"
+        ],
+        cta: "Iniciar prueba gratuita",
+        badge: "Popular",
+        trial: "Prueba Pro gratis durante 30 días"
+      },
+      enterprise: {
+        name: "Empresa",
+        price: "Personalizado",
+        period: "",
+        description: "Solución completa para equipos y organizaciones agrícolas",
+        features: [
+          "Todo del plan Profesional",
+          "Gestión multi-usuario",
+          "Formación personalizada",
+          "Soporte dedicado 24/7",
+          "Integración y onboarding",
+          "Informes y análisis avanzados"
+        ],
+        cta: "Contactar ventas"
+      }
+    },
+    comparePlansTitle: "Comparar planes",
+    comparePlansSubtitle: "Encuentra el que sea adecuado para ti",
+    compareFeaturesLabel: "Características",
+    compareFeatures: [
+      { label: "Cursos incluidos", free: "3 cursos", pro: "Ilimitado", enterprise: "Ilimitado + Personalizado" },
+      { label: "Contenido descargable", free: "Limitado", pro: "Ilimitado", enterprise: "Ilimitado" },
+      { label: "Certificaciones", free: false, pro: true, enterprise: true },
+      { label: "Soporte por email", free: false, pro: true, enterprise: true },
+      { label: "Soporte prioritario", free: false, pro: false, enterprise: true },
+      { label: "Consultas con expertos", free: false, pro: "1/mes", enterprise: "Ilimitado" },
+      { label: "Multi-usuarios", free: false, pro: false, enterprise: true },
+      { label: "Formación personalizada", free: false, pro: false, enterprise: true },
+      { label: "Onboarding dedicado", free: false, pro: false, enterprise: true },
+      { label: "Análisis e informes", free: false, pro: false, enterprise: true }
+    ],
+    complianceTitle: "Cumplimiento y Certificaciones",
+    complianceSubtitle: "Estándares reconocidos para tu desarrollo profesional",
+    complianceCards: [
+      {
+        title: "Certificaciones Profesionales",
+        badge: "Todos los planes",
+        description: "Obtén certificaciones reconocidas por organizaciones agrícolas asociadas. Estas certificaciones atestiguan tus competencias adquiridas y mejoran tu credibilidad profesional.",
+        cta: "Saber más"
+      },
+      {
+        title: "Estándares de Calidad",
+        badge: "Empresa",
+        description: "Cumplimiento con estándares agrícolas internacionales y locales. Soporte para certificar tus operaciones según estándares de calidad y sostenibilidad.",
+        cta: "Contactar ventas"
+      }
+    ]
   }
 };
