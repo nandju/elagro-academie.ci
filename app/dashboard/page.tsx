@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
-import { 
-  BookOpen, 
-  CheckCircle2, 
-  Award, 
-  Clock, 
+import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+import {
+  BookOpen,
+  CheckCircle2,
+  Award,
+  Clock,
   TrendingUp,
   Bell,
   AlertCircle,
@@ -13,172 +13,288 @@ import {
   Play,
   ArrowRight,
   Users,
-  Calendar
-} from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import Link from "next/link"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+  Calendar,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useEffect, useState } from "react";
+import supabase from "@/lib/supabase";
 
 // Mock data
-const stats = {
-  ongoing: 5,
-  complete: 37,
-  certificates: 25,
-  hoursSpent: 705,
-}
 
-const popularCourses = [
-  {
-    id: "1",
-    title: "Fondamentaux de l'Élevage de Volaille",
-    category: "Élevage",
-    lessons: 16,
-    hours: 48,
-    price: "Gratuit",
-    image: "/assets/images/illustrations/page-accueil/volaille.png",
-    rating: 4.8,
-  },
-  {
-    id: "2",
-    title: "Gestion des Cultures Agricoles",
-    category: "Agriculture",
-    lessons: 30,
-    hours: 48,
-    price: "100€",
-    image: "/assets/images/illustrations/page-accueil/culture.png",
-    rating: 4.6,
-  },
-  {
-    id: "3",
-    title: "Élevage de Porcs Moderne",
-    category: "Élevage",
-    lessons: 30,
-    hours: 48,
-    price: "100€",
-    image: "/assets/images/illustrations/page-accueil/porc.png",
-    rating: 4.9,
-  },
-]
+// const popularCourses = [
+//   {
+//     id: "1",
+//     title: "Fondamentaux de l'Élevage de Volaille",
+//     category: "Élevage",
+//     lessons: 16,
+//     hours: 48,
+//     price: "Gratuit",
+//     image: "/assets/images/illustrations/page-accueil/volaille.png",
+//     rating: 4.8,
+//   },
+//   {
+//     id: "2",
+//     title: "Gestion des Cultures Agricoles",
+//     category: "Agriculture",
+//     lessons: 30,
+//     hours: 48,
+//     price: "100€",
+//     image: "/assets/images/illustrations/page-accueil/culture.png",
+//     rating: 4.6,
+//   },
+//   {
+//     id: "3",
+//     title: "Élevage de Porcs Moderne",
+//     category: "Élevage",
+//     lessons: 30,
+//     hours: 48,
+//     price: "100€",
+//     image: "/assets/images/illustrations/page-accueil/porc.png",
+//     rating: 4.9,
+//   },
+// ]
 
-const myCourses = [
-  {
-    id: "1",
-    name: "Fondamentaux de l'Élevage de Volaille",
-    lessons: "12/15",
-    status: "En cours",
-    level: "Débutant",
-    category: "Élevage",
-    progress: 75,
-    icon: "🐔",
-  },
-  {
-    id: "2",
-    name: "Gestion des Cultures Agricoles",
-    lessons: "8/20",
-    status: "En cours",
-    level: "Intermédiaire",
-    category: "Agriculture",
-    progress: 40,
-    icon: "🌾",
-  },
-  {
-    id: "3",
-    name: "Maîtrise des Systèmes d'Élevage",
-    lessons: "15/15",
-    status: "Terminé",
-    level: "Avancé",
-    category: "Élevage",
-    progress: 100,
-    icon: "🎓",
-  },
-]
+// const myCourses = [
+//   {
+//     id: "1",
+//     name: "Fondamentaux de l'Élevage de Volaille",
+//     lessons: "12/15",
+//     status: "En cours",
+//     level: "Débutant",
+//     category: "Élevage",
+//     progress: 75,
+//     icon: "🐔",
+//   },
+//   {
+//     id: "2",
+//     name: "Gestion des Cultures Agricoles",
+//     lessons: "8/20",
+//     status: "En cours",
+//     level: "Intermédiaire",
+//     category: "Agriculture",
+//     progress: 40,
+//     icon: "🌾",
+//   },
+//   {
+//     id: "3",
+//     name: "Maîtrise des Systèmes d'Élevage",
+//     lessons: "15/15",
+//     status: "Terminé",
+//     level: "Avancé",
+//     category: "Élevage",
+//     progress: 100,
+//     icon: "🎓",
+//   },
+// ]
 
-const notifications = [
-  {
-    id: 1,
-    title: "Nouveau quiz disponible",
-    message: "Le quiz du module 2 est maintenant disponible",
-    time: "Il y a 2 heures",
-    type: "quiz",
-    read: false,
-  },
-  {
-    id: 2,
-    title: "Nouvelle formation ajoutée",
-    message: "Découvrez la nouvelle formation sur l'agriculture biologique",
-    time: "Il y a 5 heures",
-    type: "course",
-    read: false,
-  },
-  {
-    id: 3,
-    title: "Certificat disponible",
-    message: "Votre certificat de réussite est prêt à être téléchargé",
-    time: "Hier",
-    type: "certificate",
-    read: true,
-  },
-]
+// const notifications = [
+//   {
+//     id: 1,
+//     title: "Nouveau quiz disponible",
+//     message: "Le quiz du module 2 est maintenant disponible",
+//     time: "Il y a 2 heures",
+//     type: "quiz",
+//     read: false,
+//   },
+//   {
+//     id: 2,
+//     title: "Nouvelle formation ajoutée",
+//     message: "Découvrez la nouvelle formation sur l'agriculture biologique",
+//     time: "Il y a 5 heures",
+//     type: "course",
+//     read: false,
+//   },
+//   {
+//     id: 3,
+//     title: "Certificat disponible",
+//     message: "Votre certificat de réussite est prêt à être téléchargé",
+//     time: "Hier",
+//     type: "certificate",
+//     read: true,
+//   },
+// ]
 
-const suggestions = [
-  {
-    id: "1",
-    title: "Élevage de Ruminants",
-    category: "Élevage",
-    reason: "Basé sur vos intérêts",
-  },
-  {
-    id: "2",
-    title: "Marché Bio et Commercialisation",
-    category: "Agriculture",
-    reason: "Recommandé pour vous",
-  },
-  {
-    id: "3",
-    title: "Élevage de Poissons",
-    category: "Élevage",
-    reason: "Populaire dans votre région",
-  },
-]
+// const suggestions = [
+//   {
+//     id: "1",
+//     title: "Élevage de Ruminants",
+//     category: "Élevage",
+//     reason: "Basé sur vos intérêts",
+//   },
+//   {
+//     id: "2",
+//     title: "Marché Bio et Commercialisation",
+//     category: "Agriculture",
+//     reason: "Recommandé pour vous",
+//   },
+//   {
+//     id: "3",
+//     title: "Élevage de Poissons",
+//     category: "Élevage",
+//     reason: "Populaire dans votre région",
+//   },
+// ]
 
-const courseTopicDistribution = [
-  { name: "Élevage", value: 40, color: "bg-[#9A000D]" },
-  { name: "Agriculture", value: 30, color: "bg-[#269940]" },
-  { name: "Commerce", value: 20, color: "bg-[#FFD463]" },
-  { name: "Données", value: 10, color: "bg-[#1079CE]" },
-]
-
-const continueLearning = [
-  {
-    id: "1",
-    title: "Fondamentaux de l'Élevage de Volaille",
-    category: "Élevage",
-    lessons: "12/16",
-    progress: 75,
-    icon: "🐔",
-  },
-  {
-    id: "2",
-    title: "Cybersécurité Agricole",
-    category: "Technologie",
-    lessons: "20/30",
-    progress: 60,
-    icon: "🔒",
-  },
-  {
-    id: "3",
-    title: "Analyse de Données Agricoles",
-    category: "Données",
-    lessons: "8/20",
-    progress: 40,
-    icon: "📊",
-  },
-]
+// const courseTopicDistribution = [
+//   { name: "Élevage", value: 40, color: "bg-[#9A000D]" },
+//   { name: "Agriculture", value: 30, color: "bg-[#269940]" },
+//   { name: "Commerce", value: 20, color: "bg-[#FFD463]" },
+//   { name: "Données", value: 10, color: "bg-[#1079CE]" },
+// ]
 
 export default function DashboardPage() {
+  const [stats, setStats] = useState({
+    ongoing: 0,
+    complete: 0,
+    certificates: 0,
+    hoursSpent: 0,
+  });
+  const [continueLearning, setContinueLearning] = useState<any[]>([]);
+  const [courseTopicDistribution, setCourseTopicDistribution] = useState<any[]>(
+    []
+  );
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [myCourses, setMyCourses] = useState<any[]>([]);
+  const [popularCourses, setPopularCourses] = useState<any[]>([]);
+
+  const getAllData = async () => {
+    const basicsInfo = await cookieStore.get("user-connected");
+    if (!basicsInfo) return;
+    const value: any = basicsInfo.value;
+    const decoded = decodeURIComponent(value);
+    const datas = JSON.parse(decoded);
+    const { data, error } = await supabase
+      .from("enrolled")
+      .select("*")
+      .eq("learner_id", datas.id);
+    if (error) {
+      console.error(
+        "Erreur lors de la récupération des cours inscrits :",
+        error
+      );
+    } else {
+      console.log("Cours inscrits récupérés avec succès :", data);
+      // Récupérer les détails des cours inscrits
+      setStats((prev) => ({
+        ...prev,
+        ongoing:
+          data?.filter((enrollment) => enrollment.statut === "available")
+            .length || 0,
+        complete:
+          data?.filter((enrollment) => enrollment.statut === "complete")
+            .length || 0,
+        // certificates: data?.filter((enrollment) => enrollment.certificate_issued).length || 0,
+        hoursSpent: 0,
+      }));
+
+      const courseIds = data?.map((enrollment) => enrollment.course_id) || [];
+      const fetchCoursesDetails = async () => {
+        const { data: coursesData, error: coursesError } = await supabase
+          .from("courses")
+          .select("*")
+          .in("id", courseIds)
+          .order("id", { ascending: false })
+          .limit(5);
+        if (coursesError) {
+          console.error(
+            "Erreur lors de la récupération des détails des cours :",
+            coursesError
+          );
+        } else {
+          console.log("Détails des cours récupérés avec succès :", coursesData);
+          const myCoursesData = data?.map((enrollment) => {
+            const courseDetail = coursesData?.find(
+              (course) => parseInt(course.id) == parseInt(enrollment.course_id)
+            );
+            console.log("Détail du cours pour l'inscription :", courseDetail);
+            return {
+              id: courseDetail?.id,
+              name: courseDetail?.title,
+              lessons: `${
+                enrollment.lessons_completed
+                  ? `${enrollment.lessons_completed}/${
+                      courseDetail?.total_lessons || 0
+                    }`
+                  : 0
+              } `,
+              status:
+                enrollment.statut === "available" ? "En cours" : "Terminé",
+              level: courseDetail?.level || "Débutant",
+              category: courseDetail?.category,
+              progress: courseDetail
+                ? Math.round(
+                    (enrollment.lessons_completed /
+                      courseDetail.total_lessons) *
+                      100
+                  )
+                : 0,
+              icon: courseDetail?.icon || "📘",
+            };
+          });
+          setMyCourses(myCoursesData || []);
+        }
+      };
+      fetchCoursesDetails();
+
+      const { data: certifData, error: certifError } = await supabase
+        .from("certificats")
+        .select("*")
+        .eq("learner_id", datas.id);
+      if (certifError) {
+        console.error(
+          "Erreur lors de la récupération des certificats :",
+          certifError
+        );
+      } else {
+        setStats((prev) => ({
+          ...prev,
+          certificates: certifData?.length || 0,
+        }));
+      }
+      const { data: popularData, error: popularError } = await supabase
+        .from("courses")
+        .select("*")
+        .order("students", { ascending: false })
+        .limit(3);
+      if (popularError) {
+        console.error(
+          "Erreur lors de la récupération des cours populaires :",
+          popularError
+        );
+      } else {
+        setPopularCourses(popularData || []);
+      }
+      const { data: suggestionsData, error: suggestionsError } = await supabase
+        .from("courses")
+        .select("*")
+        .limit(3);
+      if (suggestionsError) {
+        console.error(
+          "Erreur lors de la récupération des suggestions de cours :",
+          suggestionsError
+        );
+      } else {
+        setSuggestions(suggestionsData || []);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getAllData();
+  }, []);
+
   return (
     <DashboardLayout>
       <div className="p-6 space-y-6">
@@ -200,7 +316,9 @@ export default function DashboardPage() {
               <BookOpen className="w-4 h-4 text-blue-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[#001A3B]">{stats.ongoing}</div>
+              <div className="text-2xl font-bold text-[#001A3B]">
+                {stats.ongoing}
+              </div>
               <p className="text-xs text-[#001A3B]/60 mt-1">
                 Formations actives
               </p>
@@ -215,7 +333,9 @@ export default function DashboardPage() {
               <CheckCircle2 className="w-4 h-4 text-green-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[#001A3B]">{stats.complete}</div>
+              <div className="text-2xl font-bold text-[#001A3B]">
+                {stats.complete}
+              </div>
               <p className="text-xs text-[#001A3B]/60 mt-1">
                 Formations complétées
               </p>
@@ -230,7 +350,9 @@ export default function DashboardPage() {
               <Award className="w-4 h-4 text-orange-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[#001A3B]">{stats.certificates}</div>
+              <div className="text-2xl font-bold text-[#001A3B]">
+                {stats.certificates}
+              </div>
               <p className="text-xs text-[#001A3B]/60 mt-1">
                 Certificats obtenus
               </p>
@@ -245,7 +367,9 @@ export default function DashboardPage() {
               <Clock className="w-4 h-4 text-purple-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[#001A3B]">{stats.hoursSpent}</div>
+              <div className="text-2xl font-bold text-[#001A3B]">
+                {stats.hoursSpent}
+              </div>
               <p className="text-xs text-[#001A3B]/60 mt-1">
                 Temps de formation
               </p>
@@ -264,7 +388,11 @@ export default function DashboardPage() {
                     Cours Populaires
                   </CardTitle>
                   <Link href="/courses">
-                    <Button variant="ghost" size="sm" className="text-[#E0AB6C]">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-[#E0AB6C]"
+                    >
                       Voir tout <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                   </Link>
@@ -356,7 +484,10 @@ export default function DashboardPage() {
                         />
                       </div>
                       <Link href={`/learn/${course.id}/1`}>
-                        <Button size="sm" className="bg-[#001A3B] hover:bg-[#001A3B]/90">
+                        <Button
+                          size="sm"
+                          className="bg-[#001A3B] hover:bg-[#001A3B]/90"
+                        >
                           Continuer
                         </Button>
                       </Link>
@@ -389,7 +520,7 @@ export default function DashboardPage() {
                           {course.title}
                         </h3>
                         <p className="text-sm text-[#001A3B]/60">
-                          {course.reason} • {course.category}
+                          {course.reason || "📘"} • {course.category}
                         </p>
                       </div>
                       <ArrowRight className="w-5 h-5 text-[#E0AB6C]" />
@@ -458,28 +589,29 @@ export default function DashboardPage() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-[#001A3B]">42</div>
+                    <div className="text-3xl font-bold text-[#001A3B]">0</div>
                     <p className="text-sm text-[#001A3B]/60">Total des Cours</p>
                   </div>
                   <div className="space-y-3">
-                    {courseTopicDistribution.map((topic) => (
-                      <div key={topic.name}>
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm font-medium text-[#001A3B]">
-                            {topic.name}
-                          </span>
-                          <span className="text-sm text-[#001A3B]/60">
-                            {topic.value}%
-                          </span>
+                    {courseTopicDistribution &&
+                      courseTopicDistribution.map((topic) => (
+                        <div key={topic.name}>
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm font-medium text-[#001A3B]">
+                              {topic.name}
+                            </span>
+                            <span className="text-sm text-[#001A3B]/60">
+                              {topic.value}%
+                            </span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              className={`h-2 rounded-full ${topic.color}`}
+                              style={{ width: `${topic.value}%` }}
+                            />
+                          </div>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div
-                            className={`h-2 rounded-full ${topic.color}`}
-                            style={{ width: `${topic.value}%` }}
-                          />
-                        </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
               </CardContent>
@@ -529,6 +661,5 @@ export default function DashboardPage() {
         </div>
       </div>
     </DashboardLayout>
-  )
+  );
 }
-

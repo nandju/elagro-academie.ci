@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import Link from "next/link"
 import { Search, Filter, ChevronDown, Clock, Users, Star, BookOpen, TrendingUp, Award } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -17,6 +17,7 @@ import {
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
+import supabase from "@/lib/supabase"
 
 // Course types
 type Field = "livestock" | "agriculture" | "all"
@@ -43,188 +44,188 @@ interface Course {
 }
 
 // Mock data
-const courses: Course[] = [
-  {
-    id: 1,
-    title: "Fondamentaux de l'Élevage de Volaille",
-    description: "Apprenez les bases de l'élevage de poulets sains, la gestion des pondeuses et des poulets de chair, et l'optimisation de la production.",
-    field: "livestock",
-    difficulty: "beginner",
-    isFree: true,
-    duration: "6 semaines",
-    durationCategory: "medium",
-    rating: 4.8,
-    followers: 1250,
-    materialsCount: 12,
-    createdAt: "2024-01-15",
-    tags: ["Volaille", "Débutant", "Santé Animale"],
-  },
-  {
-    id: 2,
-    title: "Techniques Avancées de Rotation des Cultures",
-    description: "Maîtrisez les stratégies de rotation des cultures durables pour améliorer la santé du sol et augmenter les rendements.",
-    field: "agriculture",
-    difficulty: "advanced",
-    isFree: false,
-    duration: "8 semaines",
-    durationCategory: "medium",
-    rating: 4.9,
-    followers: 890,
-    materialsCount: 15,
-    createdAt: "2024-02-01",
-    tags: ["Cultures", "Avancé", "Durabilité"],
-  },
-  {
-    id: 3,
-    title: "Élevage Porcin et Nutrition",
-    description: "Guide complet sur l'élevage porcin, la gestion des aliments et les protocoles de santé.",
-    field: "livestock",
-    difficulty: "intermediate",
-    isFree: false,
-    duration: "4 semaines",
-    durationCategory: "short",
-    rating: 4.7,
-    followers: 2100,
-    materialsCount: 10,
-    createdAt: "2024-01-20",
-    tags: ["Porcs", "Nutrition", "Élevage"],
-  },
-  {
-    id: 4,
-    title: "Pratiques d'Agriculture Biologique",
-    description: "Apprenez les méthodes d'agriculture biologique, les processus de certification et les stratégies de marché.",
-    field: "agriculture",
-    difficulty: "intermediate",
-    isFree: true,
-    duration: "10 semaines",
-    durationCategory: "long",
-    rating: 4.6,
-    followers: 1650,
-    materialsCount: 18,
-    createdAt: "2024-02-10",
-    tags: ["Bio", "Certification", "Durabilité"],
-  },
-  {
-    id: 5,
-    title: "Gestion de la Santé des Ruminants",
-    description: "Techniques avancées pour gérer la santé et la productivité des bovins, ovins et caprins.",
-    field: "livestock",
-    difficulty: "advanced",
-    isFree: false,
-    duration: "12 semaines",
-    durationCategory: "long",
-    rating: 4.9,
-    followers: 980,
-    materialsCount: 20,
-    createdAt: "2024-01-05",
-    tags: ["Bovins", "Santé", "Avancé"],
-  },
-  {
-    id: 6,
-    title: "Gestion du Sol et Fertilité",
-    description: "Connaissances essentielles pour maintenir un sol sain et optimiser la production agricole.",
-    field: "agriculture",
-    difficulty: "beginner",
-    isFree: true,
-    duration: "5 semaines",
-    durationCategory: "short",
-    rating: 4.5,
-    followers: 1450,
-    materialsCount: 8,
-    createdAt: "2024-02-15",
-    tags: ["Sol", "Débutant", "Fertilité"],
-  },
-  {
-    id: 7,
-    title: "Systèmes d'Aquaculture",
-    description: "Concevez et gérez des systèmes d'élevage de poissons efficaces pour une production durable.",
-    field: "livestock",
-    difficulty: "intermediate",
-    isFree: false,
-    duration: "7 semaines",
-    durationCategory: "medium",
-    rating: 4.7,
-    followers: 1120,
-    materialsCount: 14,
-    createdAt: "2024-01-25",
-    tags: ["Poisson", "Aquaculture", "Systèmes"],
-  },
-  {
-    id: 8,
-    title: "Gestion Intégrée des Ravageurs",
-    description: "Stratégies durables de lutte contre les ravageurs pour les cultures agricoles sans utilisation excessive de produits chimiques.",
-    field: "agriculture",
-    difficulty: "intermediate",
-    isFree: true,
-    duration: "6 semaines",
-    durationCategory: "medium",
-    rating: 4.6,
-    followers: 1320,
-    materialsCount: 11,
-    createdAt: "2024-02-05",
-    tags: ["Lutte Antiravageurs", "GIR", "Durabilité"],
-  },
-  {
-    id: 9,
-    title: "Essentiels de l'Élevage de Lapins",
-    description: "Guide complet pour démarrer et gérer une exploitation rentable d'élevage de lapins.",
-    field: "livestock",
-    difficulty: "beginner",
-    isFree: true,
-    duration: "4 semaines",
-    durationCategory: "short",
-    rating: 4.4,
-    followers: 890,
-    materialsCount: 9,
-    createdAt: "2024-02-20",
-    tags: ["Lapins", "Débutant", "Élevage"],
-  },
-  {
-    id: 10,
-    title: "Systèmes d'Irrigation et Gestion de l'Eau",
-    description: "Apprenez les techniques d'irrigation efficaces et les méthodes de conservation de l'eau pour l'agriculture.",
-    field: "agriculture",
-    difficulty: "advanced",
-    isFree: false,
-    duration: "9 semaines",
-    durationCategory: "long",
-    rating: 4.8,
-    followers: 1050,
-    materialsCount: 16,
-    createdAt: "2024-01-10",
-    tags: ["Irrigation", "Eau", "Avancé"],
-  },
-  {
-    id: 11,
-    title: "Production d'Aliments pour Animaux",
-    description: "Maîtrisez l'art de produire des aliments pour animaux de haute qualité à partir de résidus de cultures et de céréales.",
-    field: "agriculture",
-    difficulty: "intermediate",
-    isFree: false,
-    duration: "6 semaines",
-    durationCategory: "medium",
-    rating: 4.7,
-    followers: 1180,
-    materialsCount: 13,
-    createdAt: "2024-01-30",
-    tags: ["Aliments", "Production", "Nutrition"],
-  },
-  {
-    id: 12,
-    title: "Stratégies de Commercialisation du Bétail",
-    description: "Apprenez à commercialiser et vendre efficacement les produits d'élevage sur les marchés locaux et internationaux.",
-    field: "livestock",
-    difficulty: "intermediate",
-    isFree: true,
-    duration: "5 semaines",
-    durationCategory: "short",
-    rating: 4.5,
-    followers: 950,
-    materialsCount: 7,
-    createdAt: "2024-02-12",
-    tags: ["Commercialisation", "Commerce", "Élevage"],
-  },
-]
+// const courses: Course[] = [
+//   {
+//     id: 1,
+//     title: "Fondamentaux de l'Élevage de Volaille",
+//     description: "Apprenez les bases de l'élevage de poulets sains, la gestion des pondeuses et des poulets de chair, et l'optimisation de la production.",
+//     field: "livestock",
+//     difficulty: "beginner",
+//     isFree: true,
+//     duration: "6 semaines",
+//     durationCategory: "medium",
+//     rating: 4.8,
+//     followers: 1250,
+//     materialsCount: 12,
+//     createdAt: "2024-01-15",
+//     tags: ["Volaille", "Débutant", "Santé Animale"],
+//   },
+//   {
+//     id: 2,
+//     title: "Techniques Avancées de Rotation des Cultures",
+//     description: "Maîtrisez les stratégies de rotation des cultures durables pour améliorer la santé du sol et augmenter les rendements.",
+//     field: "agriculture",
+//     difficulty: "advanced",
+//     isFree: false,
+//     duration: "8 semaines",
+//     durationCategory: "medium",
+//     rating: 4.9,
+//     followers: 890,
+//     materialsCount: 15,
+//     createdAt: "2024-02-01",
+//     tags: ["Cultures", "Avancé", "Durabilité"],
+//   },
+//   {
+//     id: 3,
+//     title: "Élevage Porcin et Nutrition",
+//     description: "Guide complet sur l'élevage porcin, la gestion des aliments et les protocoles de santé.",
+//     field: "livestock",
+//     difficulty: "intermediate",
+//     isFree: false,
+//     duration: "4 semaines",
+//     durationCategory: "short",
+//     rating: 4.7,
+//     followers: 2100,
+//     materialsCount: 10,
+//     createdAt: "2024-01-20",
+//     tags: ["Porcs", "Nutrition", "Élevage"],
+//   },
+//   {
+//     id: 4,
+//     title: "Pratiques d'Agriculture Biologique",
+//     description: "Apprenez les méthodes d'agriculture biologique, les processus de certification et les stratégies de marché.",
+//     field: "agriculture",
+//     difficulty: "intermediate",
+//     isFree: true,
+//     duration: "10 semaines",
+//     durationCategory: "long",
+//     rating: 4.6,
+//     followers: 1650,
+//     materialsCount: 18,
+//     createdAt: "2024-02-10",
+//     tags: ["Bio", "Certification", "Durabilité"],
+//   },
+//   {
+//     id: 5,
+//     title: "Gestion de la Santé des Ruminants",
+//     description: "Techniques avancées pour gérer la santé et la productivité des bovins, ovins et caprins.",
+//     field: "livestock",
+//     difficulty: "advanced",
+//     isFree: false,
+//     duration: "12 semaines",
+//     durationCategory: "long",
+//     rating: 4.9,
+//     followers: 980,
+//     materialsCount: 20,
+//     createdAt: "2024-01-05",
+//     tags: ["Bovins", "Santé", "Avancé"],
+//   },
+//   {
+//     id: 6,
+//     title: "Gestion du Sol et Fertilité",
+//     description: "Connaissances essentielles pour maintenir un sol sain et optimiser la production agricole.",
+//     field: "agriculture",
+//     difficulty: "beginner",
+//     isFree: true,
+//     duration: "5 semaines",
+//     durationCategory: "short",
+//     rating: 4.5,
+//     followers: 1450,
+//     materialsCount: 8,
+//     createdAt: "2024-02-15",
+//     tags: ["Sol", "Débutant", "Fertilité"],
+//   },
+//   {
+//     id: 7,
+//     title: "Systèmes d'Aquaculture",
+//     description: "Concevez et gérez des systèmes d'élevage de poissons efficaces pour une production durable.",
+//     field: "livestock",
+//     difficulty: "intermediate",
+//     isFree: false,
+//     duration: "7 semaines",
+//     durationCategory: "medium",
+//     rating: 4.7,
+//     followers: 1120,
+//     materialsCount: 14,
+//     createdAt: "2024-01-25",
+//     tags: ["Poisson", "Aquaculture", "Systèmes"],
+//   },
+//   {
+//     id: 8,
+//     title: "Gestion Intégrée des Ravageurs",
+//     description: "Stratégies durables de lutte contre les ravageurs pour les cultures agricoles sans utilisation excessive de produits chimiques.",
+//     field: "agriculture",
+//     difficulty: "intermediate",
+//     isFree: true,
+//     duration: "6 semaines",
+//     durationCategory: "medium",
+//     rating: 4.6,
+//     followers: 1320,
+//     materialsCount: 11,
+//     createdAt: "2024-02-05",
+//     tags: ["Lutte Antiravageurs", "GIR", "Durabilité"],
+//   },
+//   {
+//     id: 9,
+//     title: "Essentiels de l'Élevage de Lapins",
+//     description: "Guide complet pour démarrer et gérer une exploitation rentable d'élevage de lapins.",
+//     field: "livestock",
+//     difficulty: "beginner",
+//     isFree: true,
+//     duration: "4 semaines",
+//     durationCategory: "short",
+//     rating: 4.4,
+//     followers: 890,
+//     materialsCount: 9,
+//     createdAt: "2024-02-20",
+//     tags: ["Lapins", "Débutant", "Élevage"],
+//   },
+//   {
+//     id: 10,
+//     title: "Systèmes d'Irrigation et Gestion de l'Eau",
+//     description: "Apprenez les techniques d'irrigation efficaces et les méthodes de conservation de l'eau pour l'agriculture.",
+//     field: "agriculture",
+//     difficulty: "advanced",
+//     isFree: false,
+//     duration: "9 semaines",
+//     durationCategory: "long",
+//     rating: 4.8,
+//     followers: 1050,
+//     materialsCount: 16,
+//     createdAt: "2024-01-10",
+//     tags: ["Irrigation", "Eau", "Avancé"],
+//   },
+//   {
+//     id: 11,
+//     title: "Production d'Aliments pour Animaux",
+//     description: "Maîtrisez l'art de produire des aliments pour animaux de haute qualité à partir de résidus de cultures et de céréales.",
+//     field: "agriculture",
+//     difficulty: "intermediate",
+//     isFree: false,
+//     duration: "6 semaines",
+//     durationCategory: "medium",
+//     rating: 4.7,
+//     followers: 1180,
+//     materialsCount: 13,
+//     createdAt: "2024-01-30",
+//     tags: ["Aliments", "Production", "Nutrition"],
+//   },
+//   {
+//     id: 12,
+//     title: "Stratégies de Commercialisation du Bétail",
+//     description: "Apprenez à commercialiser et vendre efficacement les produits d'élevage sur les marchés locaux et internationaux.",
+//     field: "livestock",
+//     difficulty: "intermediate",
+//     isFree: true,
+//     duration: "5 semaines",
+//     durationCategory: "short",
+//     rating: 4.5,
+//     followers: 950,
+//     materialsCount: 7,
+//     createdAt: "2024-02-12",
+//     tags: ["Commercialisation", "Commerce", "Élevage"],
+//   },
+// ]
 
 export default function CoursesCatalog() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -234,20 +235,24 @@ export default function CoursesCatalog() {
   const [durationFilter, setDurationFilter] = useState<Duration>("all")
   const [sortBy, setSortBy] = useState<SortOption>("newest")
 
+  const [courses, setCourses] = useState<any[]>([]);
+  const [coursesCategory, setCoursesCategory] = useState<any[]>([]);
+
   // Filter and sort courses
   const filteredCourses = useMemo(() => {
     let filtered = courses.filter((course) => {
       // Search filter
       const matchesSearch =
         course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+        course.description.toLowerCase().includes(searchQuery.toLowerCase()) 
+        // ||
+        // course.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
 
       // Field filter
       const matchesField = fieldFilter === "all" || course.field === fieldFilter
 
       // Difficulty filter
-      const matchesDifficulty = difficultyFilter === "all" || course.difficulty === difficultyFilter
+      const matchesDifficulty = difficultyFilter === "all" || course.level === difficultyFilter
 
       // Pricing filter
       const matchesPricing =
@@ -276,13 +281,32 @@ export default function CoursesCatalog() {
     })
 
     return filtered
-  }, [searchQuery, fieldFilter, difficultyFilter, pricingFilter, durationFilter, sortBy])
+  }, [searchQuery, fieldFilter, difficultyFilter, pricingFilter, durationFilter, sortBy,courses])
 
   const activeFiltersCount =
     (fieldFilter !== "all" ? 1 : 0) +
     (difficultyFilter !== "all" ? 1 : 0) +
     (pricingFilter !== "all" ? 1 : 0) +
     (durationFilter !== "all" ? 1 : 0)
+
+
+    const fetchAllCourses = async () => {
+      const {data,error} =await supabase.from('courses').select('*');
+      if(error){
+        console.error("Error fetching courses:", error);
+      }else{
+        
+        setCourses(data);
+        
+        setCoursesCategory(prev => [...new Set(data?.map((course) => course.category))]);
+        console.log("Courses data:", data);
+        console.log("Courses categories:", [...new Set(data?.map((course) => course.category))]);
+      }
+    };
+
+  useEffect(() => {
+    fetchAllCourses();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background py-8 md:py-12 lg:py-16">
@@ -498,7 +522,7 @@ export default function CoursesCatalog() {
   )
 }
 
-function CourseCard({ course }: { course: Course }) {
+function CourseCard({ course }: { course: any }) {
   const difficultyColors = {
     beginner: "bg-green-100 text-green-800 border-green-200",
     intermediate: "bg-blue-100 text-blue-800 border-blue-200",
@@ -528,10 +552,10 @@ function CourseCard({ course }: { course: Course }) {
         <BookOpen className="w-16 h-16 text-[#001A3B]/20" />
         <div className="absolute top-3 left-3">
           <Badge variant="secondary" className="bg-[#001A3B]/10 text-[#001A3B] border-[#E0AB6C]/30">
-            {course.materialsCount} Matériel{course.materialsCount !== 1 ? "aux" : ""}
+            {course.materialsCount || 0} Matériel{course.materialsCount !== 1 ? "aux" : ""}
           </Badge>
         </div>
-        {course.isFree && (
+        {parseInt(course.price) === 0   && (
           <div className="absolute top-3 right-3">
             <Badge className="bg-[#E0AB6C] text-[#001A3B] font-semibold">Gratuit</Badge>
           </div>
@@ -542,8 +566,8 @@ function CourseCard({ course }: { course: Course }) {
       <div className="p-4 flex-1 flex flex-col">
         {/* Field Badge */}
         <div className="mb-2">
-          <Badge variant="outline" className={cn("text-xs", fieldColors[course.field])}>
-            {fieldLabels[course.field]}
+          <Badge variant="outline" className={cn("text-xs", fieldColors[course.category])}>
+            {fieldLabels[course.category]}
           </Badge>
         </div>
 
@@ -556,28 +580,28 @@ function CourseCard({ course }: { course: Course }) {
         <p className="text-sm text-[#001A3B]/70 mb-4 line-clamp-2 flex-1">{course.description}</p>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 mb-4">
+        {/* <div className="flex flex-wrap gap-1.5 mb-4">
           {course.tags.slice(0, 2).map((tag, idx) => (
             <Badge key={idx} variant="outline" className="text-xs border-[#E0AB6C]/30 text-[#001A3B]/70">
               {tag}
             </Badge>
           ))}
-        </div>
+        </div> */}
 
         {/* Stats and Info */}
         <div className="space-y-2 mb-4">
           {/* Difficulty */}
           <div className="flex items-center justify-between text-xs">
             <span className="text-[#001A3B]/60">Difficulté:</span>
-            <Badge variant="outline" className={cn("text-xs", difficultyColors[course.difficulty])}>
-              {difficultyLabels[course.difficulty]}
+            <Badge variant="outline" className={cn("text-xs", difficultyColors[course.level])}>
+              {difficultyLabels[course.level]}
             </Badge>
           </div>
 
           {/* Duration */}
           <div className="flex items-center gap-2 text-xs text-[#001A3B]/60">
             <Clock className="w-3.5 h-3.5" />
-            <span>{course.duration}</span>
+            <span>{course.duration || "N/A"}</span>
           </div>
 
           {/* Rating and Followers */}
@@ -588,7 +612,7 @@ function CourseCard({ course }: { course: Course }) {
             </div>
             <div className="flex items-center gap-1 text-[#001A3B]/60">
               <Users className="w-3.5 h-3.5" />
-              <span>{course.followers.toLocaleString()}</span>
+              {/* <span>{course.followers.toLocaleString()}</span> */}
             </div>
           </div>
         </div>
@@ -599,7 +623,7 @@ function CourseCard({ course }: { course: Course }) {
           size="sm"
           asChild
         >
-          <span>{course.isFree ? "Commencer gratuitement" : "Voir le cours"}</span>
+          <span>{parseInt(course.price) === 0 ? "Commencer gratuitement" : "Voir le cours"}</span>
         </Button>
       </div>
     </Link>

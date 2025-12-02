@@ -17,15 +17,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { useEffect, useState } from "react"
+import supabase from "@/lib/supabase"
 
 // Mock data
 const stats = {
-  totalCourses: 42,
-  completedCourses: 37,
-  inProgress: 5,
-  averageScore: 85,
-  totalHours: 705,
-  certificates: 25,
+  totalCourses: 0,
+  completedCourses: 0,
+  inProgress: 0,
+  averageScore: 0,
+  totalHours: 0,
+  certificates: 0,
 }
 
 const monthlyProgress = [
@@ -35,13 +37,64 @@ const monthlyProgress = [
   { month: "Avr", completed: 7, started: 2 },
 ]
 
-const categoryStats = [
-  { name: "Élevage", completed: 20, total: 25, percentage: 80 },
-  { name: "Agriculture", completed: 12, total: 15, percentage: 80 },
-  { name: "Commerce", completed: 5, total: 2, percentage: 100 },
+const categoryStats: any[] = [
+  // { name: "Élevage", completed: 20, total: 25, percentage: 80 },
+  // { name: "Agriculture", completed: 12, total: 15, percentage: 80 },
+  // { name: "Commerce", completed: 5, total: 2, percentage: 100 },
 ]
 
 export default function ReportsPage() {
+  const [stats, setStats] = useState({
+    totalCourses: 0,
+    completedCourses: 0,
+    inProgress: 0,
+    averageScore: 0,
+    totalHours: 0,
+    certificates: 0,
+  })
+  const [monthlyProgress, setMonthlyProgress] = useState([
+    { month: "Jan", completed: 0, started: 0 },
+    { month: "Fév", completed: 0, started: 0 },
+  ])
+  const [categoryStats, setCategoryStats] = useState<any[]>([])
+
+
+  const getAllData = async () => {
+      const basicsInfo = await cookieStore.get("user-connected")
+    if(!basicsInfo) return
+    const value:any = basicsInfo.value
+    const decoded = decodeURIComponent(value);
+    const datas = JSON.parse(decoded);
+    const {data, error} = await supabase
+      .from('enrolled')
+      .select('*')
+      .eq('learner_id', datas.id)
+    if(error) {
+      console.log("Error fetching enrolled courses:", error)
+      return
+    }
+    // Process data to update stats, monthlyProgress, and categoryStats
+    // For demonstration, using static values
+    const  {data: certificatData, error: certificatsError} = await supabase.from('certificats').select('*').eq('learner_id', datas.id)
+    if(certificatsError) {
+      console.log("Error fetching certificats:", certificatsError)
+      return
+    }
+    setStats({
+      totalCourses: data.length,
+      completedCourses: data.filter((c: any) => c.statut === 'completed').length,
+      inProgress: data.filter((c: any) => c.statut === 'available').length,
+      averageScore: certificatData.length ? Math.round(certificatData.reduce((acc: number, c: any) => acc + (c.score || 0), 0) / certificatData.length) : 0,
+      totalHours: 0,
+      certificates: certificatData.length,
+    })
+    // Similarly update monthlyProgress and categoryStats based on fetched data
+  }
+
+
+  useEffect(() => {
+    getAllData()
+  }, [])
   return (
     <DashboardLayout>
       <div className="p-4 lg:p-6 space-y-6">
@@ -242,7 +295,7 @@ export default function ReportsPage() {
                     Temps Moyen par Cours
                   </div>
                   <div className="text-2xl font-bold text-[#001A3B]">
-                    {Math.round(stats.totalHours / stats.completedCourses)}h
+                    {stats?.totalHours ? Math.round(stats.totalHours / stats.completedCourses) : 0}h
                   </div>
                 </div>
               </div>

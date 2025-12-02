@@ -15,10 +15,10 @@ export default async function AdminLayoutPage({
   // Vérifier l'authentification et le rôle admin côté serveur
   const cookieStore = await cookies()
   const token = cookieStore.get("auth-token")?.value
-
-  if (!token) {
-    redirect("/login?redirect=/admin/dashboard")
-  }
+  console.log("AdminLayout - auth-token:", token)
+  // if (!token) {
+  //   redirect("/login?redirect=/admin/dashboard")
+  // }
 
   // TODO: Vérifier le rôle admin dans le token ou la session
   // Pour l'instant, on laisse passer - à implémenter selon votre système d'auth

@@ -86,7 +86,7 @@ export default function ElagroFeaturesSection() {
         {/* Call to Action */}
           <div className="text-center mt-16">
           <a 
-            href="/auth/register" 
+            href="/register" 
             className="inline-block bg-[#E0AB6C] hover:bg-[#d49d5a] text-[#001A3B] font-bold text-lg px-12 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-[#E0AB6C]/50"
           >
             {t.startNow}

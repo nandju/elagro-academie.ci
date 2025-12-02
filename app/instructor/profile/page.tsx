@@ -19,40 +19,76 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Progress } from "@/components/ui/progress"
+import { useEffect, useState } from "react"
+import supabase from "@/lib/supabase"
 
 // Mock data
-const instructor = {
-  name: "Marie Diallo",
-  email: "marie.diallo@example.com",
-  phone: "+225 07 12 34 56 78",
-  location: "Abidjan, Côte d'Ivoire",
-  bio: "Experte en élevage avec plus de 10 ans d'expérience dans la formation et le conseil agricole.",
-  expertise: ["Élevage de Volaille", "Élevage de Porcs", "Gestion Agricole"],
-  avatar: "/assets/images/instructors/instructor-1.jpg",
-  coursesCount: 5,
-  studentsCount: 245,
-  rating: 4.8,
-}
+// const instructor = {
+//   name: "Marie Diallo",
+//   email: "marie.diallo@example.com",
+//   phone: "+225 07 12 34 56 78",
+//   location: "Abidjan, Côte d'Ivoire",
+//   bio: "Experte en élevage avec plus de 10 ans d'expérience dans la formation et le conseil agricole.",
+//   expertise: ["Élevage de Volaille", "Élevage de Porcs", "Gestion Agricole"],
+//   avatar: "/assets/images/instructors/instructor-1.jpg",
+//   coursesCount: 5,
+//   studentsCount: 245,
+//   rating: 4.8,
+// }
 
-const courses = [
-  {
-    id: "1",
-    title: "Fondamentaux de l'Élevage de Volaille",
-    status: "published",
-  },
-  {
-    id: "2",
-    title: "Élevage de Porcs Moderne",
-    status: "published",
-  },
-  {
-    id: "3",
-    title: "Techniques d'Élevage de Ruminants",
-    status: "draft",
-  },
-]
+// const courses = [
+//   {
+//     id: "1",
+//     title: "Fondamentaux de l'Élevage de Volaille",
+//     status: "published",
+//   },
+//   {
+//     id: "2",
+//     title: "Élevage de Porcs Moderne",
+//     status: "published",
+//   },
+//   {
+//     id: "3",
+//     title: "Techniques d'Élevage de Ruminants",
+//     status: "draft",
+//   },
+// ]
 
 export default function InstructorProfilePage() {
+  const [instructorData, setInstructorData] = useState<any>(null)
+  const [courses, setCourses] = useState<any[]>([])
+
+
+  const getInstructorData = async () => {
+    const basicsInfo = await cookieStore.get("user-connected")
+    if(!basicsInfo) return
+    const value:any = basicsInfo.value
+    const decoded = decodeURIComponent(value);
+    const data = JSON.parse(decoded);
+    console.log(data)
+   const {data: instructorData, error} =  await supabase.from("users").select("*").eq("id", data.id)
+    if(error){
+      console.error("Erreur lors de la récupération des données de l'instructeur :", error);
+    } else {
+      console.log("Données de l'instructeur récupérées avec succès :", instructorData);
+      setInstructorData(instructorData[0])
+    }
+
+    const {data: coursesData, error: coursesError} = await supabase.from("courses").select("*").eq("instructor_id", data.id)
+    if(coursesError){
+      console.error("Erreur lors de la récupération des cours de l'instructeur :", coursesError);
+    } else {
+      console.log("Cours de l'instructeur récupérés avec succès :", coursesData);
+      setCourses(coursesData || [])
+    }
+
+  }
+
+
+  useEffect(() => {
+    getInstructorData();
+  }, [])
+
   return (
     <InstructorLayout>
       <div className="p-6 space-y-6">
@@ -80,9 +116,9 @@ export default function InstructorProfilePage() {
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-4 mb-4">
                   <Avatar className="w-20 h-20">
-                    <AvatarImage src={instructor.avatar} alt={instructor.name} />
+                    <AvatarImage src={ instructorData?.avatar} alt={instructorData?.last_name} />
                     <AvatarFallback className="bg-gradient-to-br from-[#001A3B] to-[#E0AB6C] text-white text-xl">
-                      {instructor.name.split(" ").map((n) => n[0]).join("")}
+                      {instructorData?.last_name.split(" ").map((n:any) => n[0]).join("")}
                     </AvatarFallback>
                   </Avatar>
                   <div>
@@ -95,19 +131,19 @@ export default function InstructorProfilePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Nom complet *</Label>
-                    <Input id="name" defaultValue={instructor.name} />
+                    <Input id="name" defaultValue={ instructorData?.last_name} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email *</Label>
-                    <Input id="email" type="email" defaultValue={instructor.email} />
+                    <Input id="email" type="email" defaultValue={instructorData?.email} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">Téléphone</Label>
-                    <Input id="phone" defaultValue={instructor.phone} />
+                    <Input id="phone" defaultValue={instructorData?.phone} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="location">Localisation</Label>
-                    <Input id="location" defaultValue={instructor.location} />
+                    <Input id="location" defaultValue={instructorData?.location} />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -115,13 +151,13 @@ export default function InstructorProfilePage() {
                   <textarea
                     id="bio"
                     className="flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm"
-                    defaultValue={instructor.bio}
+                    defaultValue={instructorData?.bio}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>Domaine d'expertise</Label>
                   <div className="flex flex-wrap gap-2">
-                    {instructor.expertise.map((exp, index) => (
+                    {instructorData?.expertise.map((exp:any, index:any) => (
                       <Badge key={index} variant="outline" className="text-sm">
                         {exp}
                       </Badge>
@@ -193,7 +229,7 @@ export default function InstructorProfilePage() {
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm text-[#001A3B]/70">Formations</span>
                     <span className="text-lg font-bold text-[#001A3B]">
-                      {instructor.coursesCount}
+                      {instructorData?.coursesCount}
                     </span>
                   </div>
                 </div>
@@ -201,7 +237,7 @@ export default function InstructorProfilePage() {
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm text-[#001A3B]/70">Étudiants</span>
                     <span className="text-lg font-bold text-[#001A3B]">
-                      {instructor.studentsCount}
+                      {instructorData?.studentsCount}
                     </span>
                   </div>
                 </div>
@@ -209,7 +245,7 @@ export default function InstructorProfilePage() {
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm text-[#001A3B]/70">Note moyenne</span>
                     <span className="text-lg font-bold text-[#001A3B]">
-                      {instructor.rating}/5
+                      {instructorData?.rating}/5
                     </span>
                   </div>
                   <div className="flex items-center gap-1 mt-1">
@@ -217,7 +253,7 @@ export default function InstructorProfilePage() {
                       <Award
                         key={i}
                         className={`w-4 h-4 ${
-                          i < Math.floor(instructor.rating)
+                          i < Math.floor(instructorData?.rating)
                             ? "fill-[#E0AB6C] text-[#E0AB6C]"
                             : "text-gray-300"
                         }`}

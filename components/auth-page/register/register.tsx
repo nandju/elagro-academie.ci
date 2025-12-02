@@ -1,10 +1,17 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ChevronRight, Loader2, CheckCircle2, AlertCircle, X } from "lucide-react"
-import { AgriculturalMarqueeBackground } from "@/components/landing-page/hero/agricultural-marquee-background"
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  ChevronRight,
+  Loader2,
+  CheckCircle2,
+  AlertCircle,
+  X,
+} from "lucide-react";
+import { AgriculturalMarqueeBackground } from "@/components/landing-page/hero/agricultural-marquee-background";
+import supabase from "@/lib/supabase";
 
 export function RegisterSection() {
   const [formData, setFormData] = useState({
@@ -14,39 +21,71 @@ export function RegisterSection() {
     phone: "",
     profession: "",
     password: "",
-    confirmPassword: ""
-  })
-  const [acceptTerms, setAcceptTerms] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+    confirmPassword: "",
+  });
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+  const handleSubmit = async (e: React.FormEvent) => {
+    console.log(formData);
+    e.preventDefault();
+    setIsLoading(true);
+    if (formData.password !== formData.confirmPassword) {
+      alert("Les mots de passe ne correspondent pas.");
+      setIsLoading(false);
+      return;
+    }
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+    });
+    if (error) {
+      alert("Erreur lors de l'inscription: " + error.message);
+      setIsLoading(false);
+      return;
+    }else{
+      const {data:userRegistration, error:errorRegistration} = await supabase.from('users').insert({
+        last_name: formData.lastName,
+        first_name: formData.firstName,
+        email: formData.email,
+        phone: formData.phone,
+        profession: formData.profession,
+        supabase_user_id: data.user?.id,
+        user_role: 'student'
+      });
+      if(errorRegistration){
+        alert("Erreur lors de l'enregistrement des informations utilisateur: " + errorRegistration.message);
+        setIsLoading(false);
+        return;
+      }else{
+        alert("Inscription réussie! Veuillez vérifier votre email pour confirmer votre compte.");
+      }
+    }
     // Simuler une inscription
     setTimeout(() => {
-      setIsLoading(false)
-    }, 2000)
-  }
+      setIsLoading(false);
+    }, 2000);
+  };
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden" style={{ backgroundColor: '#001A3B' }}>
+    <section
+      className="relative min-h-screen w-full overflow-hidden"
+      style={{ backgroundColor: "#001A3B" }}
+    >
       {/* 3D Marquee Background */}
       <AgriculturalMarqueeBackground />
 
       {/* Main Content */}
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-32">
-        <div 
+        <div
           className="w-full max-w-2xl rounded-lg p-12 shadow-2xl backdrop-blur-sm"
-          style={{ backgroundColor: 'rgba(0, 26, 59, 0.85)' }}
+          style={{ backgroundColor: "rgba(0, 26, 59, 0.85)" }}
         >
-          <h1 
-            className="mb-2 text-3xl font-bold" 
-            style={{ color: '#FFFFFF' }}
-          >
+          <h1 className="mb-2 text-3xl font-bold" style={{ color: "#FFFFFF" }}>
             Inscrivez-vous
           </h1>
           <p className="mb-8 text-sm text-gray-400">
@@ -58,29 +97,29 @@ export function RegisterSection() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-medium text-white">
-                  Nom <span style={{ color: '#E0AB6C' }}>*</span>
+                  Nom <span style={{ color: "#E0AB6C" }}>*</span>
                 </label>
                 <Input
                   type="text"
                   placeholder="Votre nom"
                   value={formData.lastName}
-                  onChange={(e) => handleChange('lastName', e.target.value)}
+                  onChange={(e) => handleChange("lastName", e.target.value)}
                   className="w-full border-0 bg-white/10 px-4 py-6 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-white/50"
-                  style={{ backgroundColor: 'rgba(224, 171, 108, 0.1)' }}
+                  style={{ backgroundColor: "rgba(224, 171, 108, 0.1)" }}
                 />
               </div>
 
               <div>
                 <label className="mb-2 block text-sm font-medium text-white">
-                  Prénom <span style={{ color: '#E0AB6C' }}>*</span>
+                  Prénom <span style={{ color: "#E0AB6C" }}>*</span>
                 </label>
                 <Input
                   type="text"
                   placeholder="Votre prénom"
                   value={formData.firstName}
-                  onChange={(e) => handleChange('firstName', e.target.value)}
+                  onChange={(e) => handleChange("firstName", e.target.value)}
                   className="w-full border-0 bg-white/10 px-4 py-6 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-white/50"
-                  style={{ backgroundColor: 'rgba(224, 171, 108, 0.1)' }}
+                  style={{ backgroundColor: "rgba(224, 171, 108, 0.1)" }}
                 />
               </div>
             </div>
@@ -88,45 +127,46 @@ export function RegisterSection() {
             {/* Email */}
             <div>
               <label className="mb-2 block text-sm font-medium text-white">
-                E-mail <span style={{ color: '#E0AB6C' }}>*</span>
+                E-mail <span style={{ color: "#E0AB6C" }}>*</span>
               </label>
               <Input
                 type="email"
                 placeholder="votre.email@exemple.com"
                 value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
+                onChange={(e) => handleChange("email", e.target.value)}
                 className="w-full border-0 bg-white/10 px-4 py-6 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-white/50"
-                style={{ backgroundColor: 'rgba(224, 171, 108, 0.1)' }}
+                style={{ backgroundColor: "rgba(224, 171, 108, 0.1)" }}
               />
             </div>
 
             {/* Numéro de téléphone */}
             <div>
               <label className="mb-2 block text-sm font-medium text-white">
-                Numéro de téléphone <span style={{ color: '#E0AB6C' }}>*</span>
+                Numéro de téléphone <span style={{ color: "#E0AB6C" }}>*</span>
               </label>
               <Input
                 type="tel"
                 placeholder="+225 XX XX XX XX XX"
                 value={formData.phone}
-                onChange={(e) => handleChange('phone', e.target.value)}
+                onChange={(e) => handleChange("phone", e.target.value)}
                 className="w-full border-0 bg-white/10 px-4 py-6 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-white/50"
-                style={{ backgroundColor: 'rgba(224, 171, 108, 0.1)' }}
+                style={{ backgroundColor: "rgba(224, 171, 108, 0.1)" }}
               />
             </div>
 
             {/* Profession */}
             <div>
               <label className="mb-2 block text-sm font-medium text-white">
-                Profession / Domaine d'activité <span style={{ color: '#E0AB6C' }}>*</span>
+                Profession / Domaine d'activité{" "}
+                <span style={{ color: "#E0AB6C" }}>*</span>
               </label>
               <Input
                 type="text"
                 placeholder="Ex: Agriculteur, Agronome, Étudiant..."
                 value={formData.profession}
-                onChange={(e) => handleChange('profession', e.target.value)}
+                onChange={(e) => handleChange("profession", e.target.value)}
                 className="w-full border-0 bg-white/10 px-4 py-6 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-white/50"
-                style={{ backgroundColor: 'rgba(224, 171, 108, 0.1)' }}
+                style={{ backgroundColor: "rgba(224, 171, 108, 0.1)" }}
               />
             </div>
 
@@ -134,29 +174,32 @@ export function RegisterSection() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-medium text-white">
-                  Mot de passe <span style={{ color: '#E0AB6C' }}>*</span>
+                  Mot de passe <span style={{ color: "#E0AB6C" }}>*</span>
                 </label>
                 <Input
                   type="password"
                   placeholder="••••••••"
                   value={formData.password}
-                  onChange={(e) => handleChange('password', e.target.value)}
+                  onChange={(e) => handleChange("password", e.target.value)}
                   className="w-full border-0 bg-white/10 px-4 py-6 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-white/50"
-                  style={{ backgroundColor: 'rgba(224, 171, 108, 0.1)' }}
+                  style={{ backgroundColor: "rgba(224, 171, 108, 0.1)" }}
                 />
               </div>
 
               <div>
                 <label className="mb-2 block text-sm font-medium text-white">
-                  Confirmer le mot de passe <span style={{ color: '#E0AB6C' }}>*</span>
+                  Confirmer le mot de passe{" "}
+                  <span style={{ color: "#E0AB6C" }}>*</span>
                 </label>
                 <Input
                   type="password"
                   placeholder="••••••••"
                   value={formData.confirmPassword}
-                  onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                  onChange={(e) =>
+                    handleChange("confirmPassword", e.target.value)
+                  }
                   className="w-full border-0 bg-white/10 px-4 py-6 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-white/50"
-                  style={{ backgroundColor: 'rgba(224, 171, 108, 0.1)' }}
+                  style={{ backgroundColor: "rgba(224, 171, 108, 0.1)" }}
                 />
               </div>
             </div>
@@ -169,22 +212,22 @@ export function RegisterSection() {
                 checked={acceptTerms}
                 onChange={(e) => setAcceptTerms(e.target.checked)}
                 className="mt-1 h-4 w-4 rounded border-gray-500"
-                style={{ accentColor: '#E0AB6C' }}
+                style={{ accentColor: "#E0AB6C" }}
               />
               <label htmlFor="terms" className="text-sm text-white">
                 J'accepte les{" "}
-                <a 
-                  href="#" 
+                <a
+                  href="#"
                   className="transition-colors hover:underline"
-                  style={{ color: '#E0AB6C' }}
+                  style={{ color: "#E0AB6C" }}
                 >
                   conditions d'utilisation
-                </a>
-                {" "}et la{" "}
-                <a 
-                  href="#" 
+                </a>{" "}
+                et la{" "}
+                <a
+                  href="#"
                   className="transition-colors hover:underline"
-                  style={{ color: '#E0AB6C' }}
+                  style={{ color: "#E0AB6C" }}
                 >
                   politique de confidentialité
                 </a>
@@ -196,7 +239,7 @@ export function RegisterSection() {
               onClick={handleSubmit}
               disabled={isLoading || !acceptTerms}
               className="w-full py-6 font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50"
-              style={{ backgroundColor: '#E0AB6C' }}
+              style={{ backgroundColor: "#E0AB6C" }}
             >
               {isLoading ? (
                 <>
@@ -214,10 +257,10 @@ export function RegisterSection() {
             {/* Login Link */}
             <div className="pt-4 text-center text-sm text-gray-400">
               Vous avez déjà un compte ?{" "}
-              <a 
-                href="#" 
+              <a
+                href="/login"
                 className="font-semibold transition-colors hover:underline"
-                style={{ color: '#E0AB6C' }}
+                style={{ color: "#E0AB6C" }}
               >
                 Connectez-vous
               </a>
@@ -225,11 +268,12 @@ export function RegisterSection() {
 
             {/* reCAPTCHA Notice */}
             <div className="pt-4 text-center text-xs text-gray-500">
-              Cette page est protégée par Google reCAPTCHA pour nous assurer que vous n'êtes pas un robot.{" "}
-              <a 
-                href="#" 
+              Cette page est protégée par Google reCAPTCHA pour nous assurer que
+              vous n'êtes pas un robot.{" "}
+              <a
+                href="#"
                 className="transition-colors hover:underline"
-                style={{ color: '#E0AB6C' }}
+                style={{ color: "#E0AB6C" }}
               >
                 En savoir plus.
               </a>
@@ -241,5 +285,5 @@ export function RegisterSection() {
       {/* Bottom gradient fade */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#001A3B] to-transparent" />
     </section>
-  )
+  );
 }

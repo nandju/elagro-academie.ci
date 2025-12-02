@@ -26,54 +26,59 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
+import { useEffect, useState } from "react"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog"
+import { DialogFooter, DialogHeader } from "@/components/ui/dialog"
+import supabase from "@/lib/supabase"
+import { stat } from "fs"
 
 // Mock data
-const courses = [
-  {
-    id: "1",
-    title: "Fondamentaux de l'Élevage de Volaille",
-    category: "Élevage",
-    instructor: "Marie Diallo",
-    students: 245,
-    status: "published",
-    createdAt: "2024-01-15",
-    rating: 4.8,
-    price: "Gratuit",
-  },
-  {
-    id: "2",
-    title: "Gestion des Cultures Agricoles",
-    category: "Agriculture",
-    instructor: "Amadou Sarr",
-    students: 189,
-    status: "published",
-    createdAt: "2024-02-20",
-    rating: 4.6,
-    price: "100€",
-  },
-  {
-    id: "3",
-    title: "Élevage de Porcs Moderne",
-    category: "Élevage",
-    instructor: "Marie Diallo",
-    students: 156,
-    status: "draft",
-    createdAt: "2024-03-10",
-    rating: 4.9,
-    price: "150€",
-  },
-  {
-    id: "4",
-    title: "Techniques d'Élevage de Ruminants",
-    category: "Élevage",
-    instructor: "Amadou Sarr",
-    students: 98,
-    status: "published",
-    createdAt: "2024-01-25",
-    rating: 4.7,
-    price: "120€",
-  },
-]
+// const courses = [
+//   {
+//     id: "1",
+//     title: "Fondamentaux de l'Élevage de Volaille",
+//     category: "Élevage",
+//     instructor: "Marie Diallo",
+//     students: 245,
+//     status: "published",
+//     createdAt: "2024-01-15",
+//     rating: 4.8,
+//     price: "Gratuit",
+//   },
+//   {
+//     id: "2",
+//     title: "Gestion des Cultures Agricoles",
+//     category: "Agriculture",
+//     instructor: "Amadou Sarr",
+//     students: 189,
+//     status: "published",
+//     createdAt: "2024-02-20",
+//     rating: 4.6,
+//     price: "100€",
+//   },
+//   {
+//     id: "3",
+//     title: "Élevage de Porcs Moderne",
+//     category: "Élevage",
+//     instructor: "Marie Diallo",
+//     students: 156,
+//     status: "draft",
+//     createdAt: "2024-03-10",
+//     rating: 4.9,
+//     price: "150€",
+//   },
+//   {
+//     id: "4",
+//     title: "Techniques d'Élevage de Ruminants",
+//     category: "Élevage",
+//     instructor: "Amadou Sarr",
+//     students: 98,
+//     status: "published",
+//     createdAt: "2024-01-25",
+//     rating: 4.7,
+//     price: "120€",
+//   },
+// ]
 
 const categoryColors = {
   "Élevage": "bg-[#9A000D]",
@@ -81,6 +86,68 @@ const categoryColors = {
 }
 
 export default function AdminCoursesPage() {
+
+
+  const [courses, setCourses] = useState<any[]>([]);
+  const fetchCourses = async () => {
+      const {data, error} = await supabase.from('courses').select('*').eq('status', 'published');
+    if (error) {
+      console.error("Erreur lors de la récupération des formations :", error);
+    } else {
+      console.log("Formations récupérées avec succès :", data);
+      setCourses(data || []);
+    }
+  }
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const [open, setOpen] = useState(false);
+      const [form, setForm] = useState({
+        title: "",
+        category: "",
+        instructor: "",
+        price: ""
+      });
+
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+      };
+
+      const handleSubmit =async (e: React.FormEvent) => {
+        e.preventDefault();
+       const {data, error} = await supabase.from('courses').insert({
+          title: form.title,
+          category: form.category,
+          instructor: form.instructor,
+          price: form.price,
+          status: 'published',
+        })
+        if (error) {
+          console.error("Erreur lors de l'ajout de la formation :", error);
+          alert("Une erreur est survenue lors de l'ajout de la formation.");
+        } else {
+          console.log("Formation ajoutée avec succès :");
+          fetchCourses();
+          setOpen(false);
+          setForm({ title: "", category: "", instructor: "", price: "" });
+
+        }
+      };
+
+
+      const removeCourse = async (id: string) => {
+        const {data, error} = await supabase.from('courses').update({"status": "unpublished"}).eq('id', id);
+        if (error) {
+          console.error("Erreur lors de la suppression de la formation :", error);
+          alert("Une erreur est survenue lors de la suppression de la formation.");
+        } else {
+          console.log("Formation supprimée avec succès :");
+          fetchCourses();
+        }
+      };
+
   return (
     <AdminLayout>
       <div className="p-6 space-y-6">
@@ -92,12 +159,9 @@ export default function AdminCoursesPage() {
               Gérez toutes les formations de la plateforme
             </p>
           </div>
-          <Button className="bg-[#001A3B] hover:bg-[#001A3B]/90">
-            <Plus className="w-4 h-4 mr-2" />
-            Créer une formation
-          </Button>
+        
         </div>
-
+ 
         {/* Filters */}
         <Card>
           <CardContent className="pt-6">
@@ -184,7 +248,7 @@ export default function AdminCoursesPage() {
                           <Edit className="w-4 h-4 mr-2" />
                           Modifier
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
+                        <DropdownMenuItem className="text-destructive" onClick={() => removeCourse(course.id)}>
                           <Trash2 className="w-4 h-4 mr-2" />
                           Supprimer
                         </DropdownMenuItem>

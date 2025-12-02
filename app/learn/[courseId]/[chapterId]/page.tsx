@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
+import { useState, useEffect } from "react";
+import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import {
   Play,
   Pause,
@@ -20,131 +20,212 @@ import {
   ArrowLeft,
   ArrowRight,
   X,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import Link from "next/link"
-import { useParams } from "next/navigation"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import supabase from "@/lib/supabase";
 
-interface Chapter {
-  id: number
-  title: string
-  type: "video" | "pdf"
-  duration?: string
-  videoUrl?: string
-  pdfUrl?: string
-  completed: boolean
-  locked: boolean
-}
+// interface Chapter {
+//   id: number
+//   title: string
+//   type: "video" | "pdf"
+//   duration?: string
+//   videoUrl?: string
+//   pdfUrl?: string
+//   completed: boolean
+//   locked: boolean
+// }
 
-interface Module {
-  id: number
-  title: string
-  chapters: Chapter[]
-}
+// interface Module {
+//   id: number
+//   title: string
+//   chapters: Chapter[]
+// }
 
-// Mock data
-const courseData = {
-  id: "1",
-  title: "Fondamentaux de l'Élevage de Volaille",
-  modules: [
-    {
-      id: 1,
-      title: "Introduction",
-      chapters: [
-        {
-          id: 1,
-          title: "Bienvenue dans le cours",
-          type: "video" as const,
-          duration: "20 min",
-          videoUrl: "/assets/videos/video.mp4",
-          completed: true,
-          locked: false,
-        },
-        {
-          id: 2,
-          title: "Guide du cours",
-          type: "pdf" as const,
-          pdfUrl: "/pdfs/guide.pdf",
-          completed: false,
-          locked: false,
-        },
-      ],
-    },
-    {
-      id: 2,
-      title: "Maîtriser les Outils",
-      chapters: [
-        {
-          id: 3,
-          title: "Les bases de l'élevage",
-          type: "video" as const,
-          duration: "1h 20min",
-          videoUrl: "/assets/videos/video.mp4",
-          completed: false,
-          locked: false,
-        },
-        {
-          id: 4,
-          title: "Matériel nécessaire",
-          type: "pdf" as const,
-          pdfUrl: "/pdfs/materiel.pdf",
-          completed: false,
-          locked: false,
-        },
-      ],
-    },
-    {
-      id: 3,
-      title: "Maîtriser Adobe Illustrator",
-      chapters: [
-        {
-          id: 5,
-          title: "Introduction à Illustrator",
-          type: "video" as const,
-          duration: "2h 10min",
-          videoUrl: "/assets/videos/video.mp4",
-          completed: false,
-          locked: true,
-        },
-      ],
-    },
-  ],
-  progress: 4,
-  totalChapters: 25,
-}
+// // Mock data
+// const courseData = {
+//   id: "1",
+//   title: "Fondamentaux de l'Élevage de Volaille",
+//   modules: [
+//     {
+//       id: 1,
+//       title: "Introduction",
+//       chapters: [
+//         {
+//           id: 1,
+//           title: "Bienvenue dans le cours",
+//           type: "video" as const,
+//           duration: "20 min",
+//           videoUrl: "/assets/videos/video.mp4",
+//           completed: true,
+//           locked: false,
+//         },
+//         {
+//           id: 2,
+//           title: "Guide du cours",
+//           type: "pdf" as const,
+//           pdfUrl: "/pdfs/guide.pdf",
+//           completed: false,
+//           locked: false,
+//         },
+//       ],
+//     },
+//     {
+//       id: 2,
+//       title: "Maîtriser les Outils",
+//       chapters: [
+//         {
+//           id: 3,
+//           title: "Les bases de l'élevage",
+//           type: "video" as const,
+//           duration: "1h 20min",
+//           videoUrl: "/assets/videos/video.mp4",
+//           completed: false,
+//           locked: false,
+//         },
+//         {
+//           id: 4,
+//           title: "Matériel nécessaire",
+//           type: "pdf" as const,
+//           pdfUrl: "/pdfs/materiel.pdf",
+//           completed: false,
+//           locked: false,
+//         },
+//       ],
+//     },
+//     {
+//       id: 3,
+//       title: "Maîtriser Adobe Illustrator",
+//       chapters: [
+//         {
+//           id: 5,
+//           title: "Introduction à Illustrator",
+//           type: "video" as const,
+//           duration: "2h 10min",
+//           videoUrl: "/assets/videos/video.mp4",
+//           completed: false,
+//           locked: true,
+//         },
+//       ],
+//     },
+//   ],
+//   progress: 4,
+//   totalChapters: 25,
+// }
 
 export default function LearnPage() {
-  const params = useParams()
-  const courseId = params.courseId as string
-  const chapterId = parseInt(params.chapterId as string)
+  const params = useParams();
+  const courseId = params.courseId as string;
+  const chapterId = parseInt(params.chapterId as string);
 
-  const [currentChapter, setCurrentChapter] = useState<Chapter | null>(null)
-  const [currentModule, setCurrentModule] = useState<Module | null>(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isMuted, setIsMuted] = useState(false)
-  const [showConnectionWarning, setShowConnectionWarning] = useState(false)
-  const [connectionCount, setConnectionCount] = useState(1)
+  const [currentChapter, setCurrentChapter] = useState<any | null>(null);
+  const [currentModule, setCurrentModule] = useState<any | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [showConnectionWarning, setShowConnectionWarning] = useState(false);
+  const [connectionCount, setConnectionCount] = useState(1);
+
+  const [courseData, setCourseData] = useState<any>({
+    id: "1",
+    title: "",
+    modules: [
+      {
+        id: 1,
+        title: "Introduction",
+        chapters: [
+          {
+            id: 1,
+            title: "Bienvenue dans le cours",
+            type: "video" as const,
+            duration: "20 min",
+            videoUrl: "",
+            completed: true,
+            locked: false,
+          },
+          {
+            id: 2,
+            title: "Guide du cours",
+            type: "pdf" as const,
+            pdfUrl: "",
+            completed: false,
+            locked: false,
+          },
+        ],
+      },
+    ],
+    progress: 0,
+    totalChapters: 2,
+  });
+
+  const fetchCourses = async () => {
+    const { data, error } = await supabase
+      .from("courses")
+      .select("*")
+      .eq("id", courseId);
+    if (error) {
+      console.error("Error fetching course data:", error);
+      return;
+    }
+    if (data && data.length > 0) {
+      setCourseData({
+        ...data[0],
+        modules: [
+          {
+            id: 1,
+            title: "Introduction",
+            chapters: [
+              {
+                id: 1,
+                title: "Bienvenue dans le cours",
+                type: "video" as const,
+                duration: "N/A min",
+                videoUrl: `https://ryxrpzgbcrotsweioirg.supabase.co/storage/v1/object/public/elagro_bucket/${data[0].video_url}`,
+                completed: true,
+                locked: false,
+              },
+              {
+                id: 2,
+                title: "Guide du cours",
+                type: "pdf" as const,
+                pdfUrl: `https://ryxrpzgbcrotsweioirg.supabase.co/storage/v1/object/public/elagro_bucket/${data[0].pdf_url}`,
+                completed: false,
+                locked: false,
+              },
+            ],
+          },
+        ],
+      });
+    }
+  };
 
   useEffect(() => {
+    const stop= false
     // Find current chapter and module
+if (courseData.modules[0].chapters[0].videoUrl == "") {
+
+  fetchCourses();
+}
     for (const module of courseData.modules) {
-      const chapter = module.chapters.find((ch) => ch.id === chapterId)
+      console.log("Module:", module);
+      const chapter = module.chapters.find((ch: any) => ch.id === chapterId);
       if (chapter) {
-        setCurrentChapter(chapter)
-        setCurrentModule(module)
-        break
+        setCurrentChapter(chapter);
+        setCurrentModule(module);
+        break;
       }
     }
-
+    
     // Simulate connection quota check
     if (connectionCount > 2) {
-      setShowConnectionWarning(true)
+      setShowConnectionWarning(true);
     }
-  }, [chapterId, connectionCount])
+    
+  }, [chapterId, connectionCount, courseData]);
 
   if (!currentChapter || !currentModule) {
     return (
@@ -158,48 +239,51 @@ export default function LearnPage() {
           </Alert>
         </div>
       </DashboardLayout>
-    )
+    );
   }
 
   const handleChapterComplete = () => {
     // Mark chapter as completed
     if (currentChapter) {
-      currentChapter.completed = true
+      currentChapter.completed = true;
     }
-  }
+  };
 
   const handleNextChapter = () => {
     // Find next chapter
-    let found = false
+    let found = false;
     for (const module of courseData.modules) {
       for (let i = 0; i < module.chapters.length; i++) {
-        if (module.chapters[i].id === chapterId && i < module.chapters.length - 1) {
-          const nextChapter = module.chapters[i + 1]
+        if (
+          module.chapters[i].id === chapterId &&
+          i < module.chapters.length - 1
+        ) {
+          const nextChapter = module.chapters[i + 1];
           if (!nextChapter.locked) {
-            window.location.href = `/learn/${courseId}/${nextChapter.id}`
-            return
+            window.location.href = `/learn/${courseId}/${nextChapter.id}`;
+            return;
           }
         }
         if (module.chapters[i].id === chapterId) {
-          found = true
+          found = true;
         }
       }
-      if (found) break
+      if (found) break;
     }
-  }
+  };
 
   const handlePrevChapter = () => {
     // Find previous chapter
     for (const module of courseData.modules) {
       for (let i = 0; i < module.chapters.length; i++) {
         if (module.chapters[i].id === chapterId && i > 0) {
-          const prevChapter = module.chapters[i - 1]
-          window.location.href = `/learn/${courseId}/${prevChapter.id}`
-          return
+          const prevChapter = module.chapters[i - 1];
+          window.location.href = `/learn/${courseId}/${prevChapter.id}`;
+          return;
         }
       }
     }
-  }
+  };
 
   return (
     <DashboardLayout>
@@ -209,15 +293,23 @@ export default function LearnPage() {
           {/* Breadcrumbs */}
           <div className="px-4 lg:px-6 py-3 lg:py-4 border-b border-[#E0AB6C]/20 bg-white">
             <div className="flex items-center gap-2 text-xs lg:text-sm text-[#001A3B]/60 overflow-x-auto">
-              <Link href="/courses" className="hover:text-[#001A3B] whitespace-nowrap">
+              <Link
+                href="/courses"
+                className="hover:text-[#001A3B] whitespace-nowrap"
+              >
                 Mes Cours
               </Link>
               <ChevronRight className="w-3 h-3 lg:w-4 lg:h-4 flex-shrink-0" />
-              <Link href={`/courses/${courseId}`} className="hover:text-[#001A3B] truncate">
+              <Link
+                href={`/courses/${courseId}`}
+                className="hover:text-[#001A3B] truncate"
+              >
                 {courseData.title}
               </Link>
               <ChevronRight className="w-3 h-3 lg:w-4 lg:h-4 flex-shrink-0" />
-              <span className="text-[#001A3B] font-medium whitespace-nowrap">Cours</span>
+              <span className="text-[#001A3B] font-medium whitespace-nowrap">
+                Cours
+              </span>
             </div>
           </div>
 
@@ -232,7 +324,8 @@ export default function LearnPage() {
               <Alert variant="destructive" className="mb-4">
                 <AlertCircle className="w-4 h-4" />
                 <AlertDescription>
-                  Quota de connexions simultanées dépassé. Veuillez fermer une autre session.
+                  Quota de connexions simultanées dépassé. Veuillez fermer une
+                  autre session.
                 </AlertDescription>
                 <Button
                   variant="ghost"
@@ -247,7 +340,7 @@ export default function LearnPage() {
             )}
 
             {/* Video Player */}
-            {currentChapter.type === "video" && (
+            {currentChapter.type === "video" && currentChapter.videoUrl && (
               <div className="mb-6">
                 <div className="relative w-full bg-black rounded-lg overflow-hidden aspect-video">
                   <video
@@ -263,7 +356,7 @@ export default function LearnPage() {
                 <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-4">
                     <span className="text-xs sm:text-sm text-[#001A3B]/60">
-                      12:30 / 1:20:00
+                      {/* 12:30 / 1:20:00 */}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -282,7 +375,9 @@ export default function LearnPage() {
                       size="sm"
                     >
                       <CheckCircle2 className="w-4 h-4 sm:mr-2" />
-                      <span className="hidden sm:inline">Marquer comme terminé</span>
+                      <span className="hidden sm:inline">
+                        Marquer comme terminé
+                      </span>
                       <span className="sm:hidden">Terminé</span>
                     </Button>
                     <Button
@@ -307,19 +402,28 @@ export default function LearnPage() {
                     <CardTitle className="text-xl font-bold text-[#001A3B]">
                       {currentChapter.title}
                     </CardTitle>
+                    <Button
+                      className="bg-[#001A3B] hover:bg-[#001A3B]/90"
+                      onClick={() =>
+                        window.open(currentChapter.pdfUrl, "_blank")
+                      }
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Télécharger le PDF
+                    </Button>
                   </CardHeader>
                   <CardContent>
                     <div className="aspect-[4/3] bg-gray-100 rounded-lg flex items-center justify-center mb-4">
-                      <div className="text-center">
-                        <FileText className="w-16 h-16 text-[#001A3B]/40 mx-auto mb-4" />
-                        <p className="text-[#001A3B]/60 mb-4">
-                          Visionneuse PDF intégrée
-                        </p>
-                        <Button className="bg-[#001A3B] hover:bg-[#001A3B]/90">
-                          <Download className="w-4 h-4 mr-2" />
-                          Télécharger le PDF
-                        </Button>
-                      </div>
+                      {/* <div > */}
+                        {/* <FileText className="w-16 h-16 text-[#001A3B]/40 mx-auto mb-4" /> */}
+                        <iframe
+                          src={currentChapter.pdfUrl}
+                          title="PDF Viewer"
+                          width="100%"
+                          height="500px"
+                          style={{ border: "none", borderRadius: "8px" }}
+                        />
+                      {/* </div> */}
                     </div>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                       <Button
@@ -337,7 +441,9 @@ export default function LearnPage() {
                         size="sm"
                       >
                         <CheckCircle2 className="w-4 h-4 sm:mr-2" />
-                        <span className="hidden sm:inline">Marquer comme terminé</span>
+                        <span className="hidden sm:inline">
+                          Marquer comme terminé
+                        </span>
                         <span className="sm:hidden">Terminé</span>
                       </Button>
                       <Button
@@ -364,9 +470,8 @@ export default function LearnPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-[#001A3B]/70">
-                  Ce chapitre vous permet de comprendre les fondamentaux de
-                  l'élevage de volaille. Vous apprendrez les bases nécessaires
-                  pour démarrer votre propre élevage.
+                 {currentChapter.description ||
+                  "Ce chapitre vous permet de comprendre les fondamentaux de l'élevage de volaille. Vous apprendrez les bases nécessaires pour démarrer votre propre élevage."}
                 </p>
               </CardContent>
             </Card>
@@ -417,7 +522,7 @@ export default function LearnPage() {
                         {module.title}
                       </h4>
                       {module.chapters.map((chapter) => {
-                        const isActive = chapter.id === chapterId
+                        const isActive = chapter.id === chapterId;
                         return (
                           <Link
                             key={chapter.id}
@@ -450,7 +555,7 @@ export default function LearnPage() {
                               </span>
                             )}
                           </Link>
-                        )
+                        );
                       })}
                     </div>
                   ))}
@@ -481,6 +586,5 @@ export default function LearnPage() {
         </div>
       </div>
     </DashboardLayout>
-  )
+  );
 }
-

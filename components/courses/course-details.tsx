@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { ArrowLeft, Clock, Users, Star, BookOpen, Play, FileText, Award, ChevronRight, Download, CheckCircle2, Search, Home } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
+import supabase from "@/lib/supabase"
 
 interface Instructor {
   name: string
@@ -169,9 +170,95 @@ const getAvailableCourses = () => {
 }
 
 export default function CourseDetails({ courseId }: { courseId: string }) {
-  const course = getCourseDetails(courseId)
+
+  // const course = getCourseDetails(courseId)
+  const [course, setCourse] = useState<any>()
+  const [teacherInfo, setTeacherInfo] = useState<any>()
   const [expandedModule, setExpandedModule] = useState<number | null>(null)
   const [isEnrolled, setIsEnrolled] = useState(false) // In a real app, check user enrollment
+
+
+  const getCourse = async () =>{
+    const {data, error} = await supabase.from('courses').select('*').eq('id', courseId).single()
+    if(error){
+      console.error("Erreur lors de la récupération du cours :", error);
+    }else{
+      setCourse(data)
+      console.log(data)
+      // Fetch instructor info
+      const {data: instructorData, error: instructorError} = await supabase.from('users').select('*').eq('id', data.instructor_id).single()
+      if(instructorError){
+        console.error("Erreur lors de la récupération de l'instructeur :", instructorError);
+        
+      }else{
+        setTeacherInfo(instructorData)
+      }
+    }
+  }
+
+  const checkIfEnrolled = async () => {
+    const basicsInfo = await cookieStore.get("user-connected")
+    if(!basicsInfo) return
+    const value:any = basicsInfo.value
+    const decoded = decodeURIComponent(value);
+    const user = JSON.parse(decoded);
+    const {data, error} = await supabase.from('enrolled').select('*').eq('course_id', courseId).eq('learner_id', user.id).single()
+    if(error){
+      console.error("Erreur lors de la vérification de l'inscription :", error);
+    }else{
+      if(data){
+        setIsEnrolled(true)
+      }
+    }
+  }
+
+  useEffect(() => {
+    getCourse()
+    checkIfEnrolled()
+    },[])
+
+
+    const handleEnroll = async (courseId: string) => {
+       const basicsInfo:any = await cookieStore.get("user-connected")
+       const learner_mail:any = await cookieStore.get("user-email")
+    if(!basicsInfo) return
+    const value:any = basicsInfo.value
+    const decoded = decodeURIComponent(value);
+    const user = JSON.parse(decoded);
+    console.log(user)
+      
+
+      const {data, error} = await supabase.from('enrolled')
+      .insert(
+        {
+          course_id: courseId,
+          course_name: course.title,
+          learner_mail: learner_mail.value,
+           learner_id: user.id,
+           learner_name:user.name,
+           teacher_name: course.instructor,
+           teacher_id: course.instructor_id,
+        }
+      ) 
+      if(error){
+        console.error("Erreur lors de l'inscription au cours :", error);
+        alert("Une erreur est survenue lors de l'inscription au cours.");
+      }else{
+        console.log("Inscription réussie :", data);
+        alert("Inscription réussie !");
+        const {data : updateData, error : updateError} = await supabase.from('courses').update({
+          students: course.students + 1
+        }).eq('id', courseId)
+        if(updateError){
+          console.error("Erreur lors de la mise à jour du nombre de followers :", updateError );
+        }else{
+          console.log("Nombre de followers mis à jour avec succès :", updateData);
+          setCourse({...course, students: course.students + 1}) 
+        }
+        setIsEnrolled(true)
+      }
+    }
+     
 
 // Remplacez votre bloc if (!course) par ceci:
 if (!course) {
@@ -315,10 +402,10 @@ if (!course) {
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-4">
                 <Badge variant="outline" className="bg-[#E0AB6C]/20 text-[#001A3B] border-[#E0AB6C]/30">
-                  {fieldLabels[course.field]}
+                  {fieldLabels[course.category]}
                 </Badge>
-                <Badge variant="outline" className={cn("capitalize", difficultyColors[course.difficulty])}>
-                  {difficultyLabels[course.difficulty]}
+                <Badge variant="outline" className={cn("capitalize", difficultyColors[course.level])}>
+                  {difficultyLabels[course.level]}
                 </Badge>
                 {course.isFree && (
                   <Badge className="bg-[#E0AB6C] text-[#001A3B] font-semibold">Gratuit</Badge>
@@ -336,7 +423,7 @@ if (!course) {
                 <Award className="w-5 h-5 text-[#E0AB6C]" />
                 Objectif du cours
               </h2>
-              <p className="text-[#001A3B]/70 leading-relaxed">{course.objective}</p>
+              <p className="text-[#001A3B]/70 leading-relaxed">{course?.objective || "Aucun champ trouvé pour ça"}</p>
             </div>
 
             {/* Instructor */}
@@ -344,12 +431,12 @@ if (!course) {
               <h2 className="text-xl font-bold text-[#001A3B] mb-4">Instructeur</h2>
               <div className="flex items-start gap-4">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#001A3B] to-[#E0AB6C] flex items-center justify-center text-white text-xl font-bold">
-                  {course.instructor.name.split(" ").map((n) => n[0]).join("")}
+                  {course.instructor.split(" ").map((n) => n[0]).join("")}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-[#001A3B]">{course.instructor.name}</h3>
-                  <p className="text-sm text-[#E0AB6C] mb-2">{course.instructor.title}</p>
-                  <p className="text-sm text-[#001A3B]/70">{course.instructor.bio}</p>
+                  <h3 className="text-lg font-semibold text-[#001A3B]">{teacherInfo ? teacherInfo?.last_name+" "+teacherInfo?.first_name : course.instructor}</h3>
+                  <p className="text-sm text-[#E0AB6C] mb-2">{teacherInfo?.title || "Aucun champ trouvé pour ça"}</p>
+                  <p className="text-sm text-[#001A3B]/70">{teacherInfo?.bio || "Aucun champ trouvé pour ça"}</p>
                 </div>
               </div>
             </div>
@@ -358,10 +445,10 @@ if (!course) {
             <div className="bg-white rounded-xl border border-[#E0AB6C]/30 p-6">
               <h2 className="text-xl font-bold text-[#001A3B] mb-6 flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-[#E0AB6C]" />
-                Modules ({course.modules.length})
+                Modules ({course?.modules?.length || 0})
               </h2>
               <div className="space-y-3">
-                {course.modules.map((module) => (
+                {course?.modules && course?.modules.map((module) => (
                   <div
                     key={module.id}
                     className="border border-[#E0AB6C]/20 rounded-lg overflow-hidden hover:border-[#E0AB6C]/40 transition-colors"
@@ -453,9 +540,9 @@ if (!course) {
                 <div className="flex items-center gap-3">
                   <FileText className="w-5 h-5 text-[#E0AB6C]" />
                   <div>
-                    <h3 className="font-semibold text-[#001A3B]">{course.quiz.title}</h3>
+                    <h3 className="font-semibold text-[#001A3B]">{course?.quiz?.title}</h3>
                     <p className="text-sm text-[#001A3B]/60">
-                      {course.quiz.questionCount} questions • Score de passage: {course.quiz.passingScore}%
+                      {course?.quiz?.questionCount} questions • Score de passage: {course?.quiz?.passingScore}%
                     </p>
                   </div>
                 </div>
@@ -482,7 +569,7 @@ if (!course) {
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-[#001A3B] flex items-center gap-2">
                   <Star className="w-5 h-5 text-[#E0AB6C]" />
-                  Avis et Notes ({course.reviews.length})
+                  Avis et Notes ({course?.reviews && course?.reviews.length})
                 </h2>
                 <div className="flex items-center gap-2">
                   <Star className="w-5 h-5 fill-[#E0AB6C] text-[#E0AB6C]" />
@@ -490,7 +577,7 @@ if (!course) {
                 </div>
               </div>
               <div className="space-y-4">
-                {course.reviews.map((review) => (
+                {course?.reviews && course?.reviews.map((review) => (
                   <div key={review.id} className="border-b border-[#E0AB6C]/20 pb-4 last:border-0 last:pb-0">
                     <div className="flex items-start justify-between mb-2">
                       <div>
@@ -530,34 +617,34 @@ if (!course) {
                     <span className="text-sm text-[#001A3B]/60">Durée</span>
                     <div className="flex items-center gap-1 text-[#001A3B]">
                       <Clock className="w-4 h-4" />
-                      <span className="font-medium">{course.duration}</span>
+                      <span className="font-medium">{course?.duration || "N/A"}</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-[#001A3B]/60">Note</span>
                     <div className="flex items-center gap-1 text-[#001A3B]">
                       <Star className="w-4 h-4 fill-[#E0AB6C] text-[#E0AB6C]" />
-                      <span className="font-medium">{course.rating}</span>
+                      <span className="font-medium">{course?.rating}</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-[#001A3B]/60">Participants</span>
                     <div className="flex items-center gap-1 text-[#001A3B]">
                       <Users className="w-4 h-4" />
-                      <span className="font-medium">{course.followers.toLocaleString()}</span>
+                      <span className="font-medium">{course?.students && course?.students.toLocaleString()}</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-[#001A3B]/60">Matériaux</span>
                     <div className="flex items-center gap-1 text-[#001A3B]">
                       <BookOpen className="w-4 h-4" />
-                      <span className="font-medium">{course.materialsCount}</span>
+                      <span className="font-medium">{course?.materialsCount ||0}</span>
                     </div>
                   </div>
                 </div>
                 <div className="mt-6 pt-6 border-t border-[#E0AB6C]/20">
                   {isEnrolled ? (
-                    <Link href={`/courses/${courseId}/learn`}>
+                    <Link href={`/learn/${courseId}/1`}>
                       <Button className="w-full bg-[#001A3B] hover:bg-[#001A3B]/90 text-white font-semibold">
                         Accéder à mes cours
                       </Button>
@@ -565,7 +652,7 @@ if (!course) {
                   ) : (
                     <Button
                       className="w-full bg-[#E0AB6C] hover:bg-[#E0AB6C]/90 text-[#001A3B] font-semibold"
-                      onClick={() => setIsEnrolled(true)}
+                      onClick={() => handleEnroll(course.id)}
                     >
                       {course.isFree ? "Commencer la formation" : "S'inscrire au cours"}
                     </Button>
