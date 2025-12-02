@@ -516,12 +516,12 @@ if (courseData.modules[0].chapters[0].videoUrl == "") {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {courseData.modules.map((module) => (
+                  {courseData.modules.map((module:any) => (
                     <div key={module.id} className="space-y-2">
                       <h4 className="font-semibold text-[#001A3B] text-sm">
                         {module.title}
                       </h4>
-                      {module.chapters.map((chapter) => {
+                      {module.chapters.map((chapter:any) => {
                         const isActive = chapter.id === chapterId;
                         return (
                           <Link

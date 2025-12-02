@@ -160,7 +160,7 @@ export default function InstructorStudentsPage() {
                   <Avatar className="w-12 h-12">
                     <AvatarImage src={student.avatar} alt={student.name} />
                     <AvatarFallback className="bg-gradient-to-br from-[#001A3B] to-[#E0AB6C] text-white">
-                      {student.name.split(" ").map((n) => n[0]).join("")}
+                      {student.name.split(" ").map((n:any) => n[0]).join("")}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">

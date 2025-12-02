@@ -1,29 +1,35 @@
-"use client"
+"use client";
 
-import { InstructorLayout } from "@/components/instructor/instructor-layout"
-import { 
-  BookOpen, 
-  Search, 
+import { InstructorLayout } from "@/components/instructor/instructor-layout";
+import {
+  BookOpen,
+  Search,
   Plus,
   Edit,
   Eye,
   MoreVertical,
   CheckCircle2,
-  XCircle
-} from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
+  XCircle,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import Link from "next/link"
-import { useEffect, useState } from "react"
-import supabase from "@/lib/supabase"
+} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import supabase from "@/lib/supabase";
 
 // Mock data
 // const courses = [
@@ -57,38 +63,46 @@ import supabase from "@/lib/supabase"
 // ]
 
 const categoryColors = {
-  "Élevage": "bg-[#9A000D]",
-  "Agriculture": "bg-[#269940]",
-}
+  Élevage: "bg-[#9A000D]",
+  Agriculture: "bg-[#269940]",
+};
 
 export default function InstructorCoursesPage() {
   const [courses, setCourses] = useState<any[]>([]);
   const fetchCourses = async () => {
-      const basicsInfo = await cookieStore.get("user-connected")
-    if(!basicsInfo) return
-    const value:any = basicsInfo.value
+    const basicsInfo = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("user-connected="));
+    if (!basicsInfo) return;
+    const value = basicsInfo.split("=")[1];
     const decoded = decodeURIComponent(value);
     const datas = JSON.parse(decoded);
-      const {data, error} = await supabase.from('courses').select('*').eq('status', 'published').eq('instructor_id', datas?.id);
+    const { data, error } = await supabase
+      .from("courses")
+      .select("*")
+      .eq("status", "published")
+      .eq("instructor_id", datas?.id);
     if (error) {
       console.error("Erreur lors de la récupération des formations :", error);
     } else {
       console.log("Formations récupérées avec succès :", data);
       setCourses(data || []);
     }
-  }
+  };
 
   useEffect(() => {
     fetchCourses();
   }, []);
-  
+
   return (
     <InstructorLayout>
       <div className="p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-[#001A3B]">Mes Formations</h1>
+            <h1 className="text-3xl font-bold text-[#001A3B]">
+              Mes Formations
+            </h1>
             <p className="text-[#001A3B]/70 mt-1">
               Gérez toutes vos formations
             </p>
@@ -122,12 +136,18 @@ export default function InstructorCoursesPage() {
               <CardHeader>
                 <div className="flex items-start justify-between mb-2">
                   <Badge
-                    className={`${categoryColors[course.category as keyof typeof categoryColors] || "bg-gray-500"} text-white`}
+                    className={`${
+                      categoryColors[
+                        course.category as keyof typeof categoryColors
+                      ] || "bg-gray-500"
+                    } text-white`}
                   >
                     {course.category}
                   </Badge>
                   <Badge
-                    variant={course.status === "published" ? "default" : "outline"}
+                    variant={
+                      course.status === "published" ? "default" : "outline"
+                    }
                     className={
                       course.status === "published"
                         ? "bg-green-500 text-white"
@@ -184,6 +204,5 @@ export default function InstructorCoursesPage() {
         </div>
       </div>
     </InstructorLayout>
-  )
+  );
 }
-

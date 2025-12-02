@@ -523,24 +523,24 @@ export default function CoursesCatalog() {
 }
 
 function CourseCard({ course }: { course: any }) {
-  const difficultyColors = {
+  const difficultyColors : any = {
     beginner: "bg-green-100 text-green-800 border-green-200",
     intermediate: "bg-blue-100 text-blue-800 border-blue-200",
     advanced: "bg-purple-100 text-purple-800 border-purple-200",
   }
 
-  const difficultyLabels = {
+  const difficultyLabels:any = {
     beginner: "Débutant",
     intermediate: "Intermédiaire",
     advanced: "Avancé",
   }
 
-  const fieldColors = {
+  const fieldColors:any = {
     livestock: "bg-[#E0AB6C]/20 text-[#001A3B] border-[#E0AB6C]/30",
     agriculture: "bg-green-50 text-green-900 border-green-200",
   }
 
-  const fieldLabels = {
+  const fieldLabels: any = {
     livestock: "Élevage",
     agriculture: "Agriculture",
   }

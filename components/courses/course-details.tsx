@@ -197,9 +197,11 @@ export default function CourseDetails({ courseId }: { courseId: string }) {
   }
 
   const checkIfEnrolled = async () => {
-    const basicsInfo = await cookieStore.get("user-connected")
-    if(!basicsInfo) return
-    const value:any = basicsInfo.value
+  const basicsInfo = document.cookie
+  .split('; ')
+  .find(row => row.startsWith('user-connected='));
+if (!basicsInfo) return;
+const value = basicsInfo.split('=')[1];
     const decoded = decodeURIComponent(value);
     const user = JSON.parse(decoded);
     const {data, error} = await supabase.from('enrolled').select('*').eq('course_id', courseId).eq('learner_id', user.id).single()
@@ -218,13 +220,20 @@ export default function CourseDetails({ courseId }: { courseId: string }) {
     },[])
 
 
-    const handleEnroll = async (courseId: string) => {
-       const basicsInfo:any = await cookieStore.get("user-connected")
-       const learner_mail:any = await cookieStore.get("user-email")
-    if(!basicsInfo) return
-    const value:any = basicsInfo.value
-    const decoded = decodeURIComponent(value);
-    const user = JSON.parse(decoded);
+      const handleEnroll = async (courseId: string) => {
+       const basicsInfo = document.cookie
+  .split('; ')
+  .find(row => row.startsWith('user-connected='));
+if (!basicsInfo) return;
+const value = basicsInfo.split('=')[1];
+        const decoded = decodeURIComponent(value);
+        const user = JSON.parse(decoded);
+      const learner_mail = document.cookie
+  .split('; ')
+  .find(row => row.startsWith('user-email='));
+if (!learner_mail) return;
+const learner_mail_value = learner_mail.split('=')[1];
+
     console.log(user)
       
 
@@ -233,7 +242,7 @@ export default function CourseDetails({ courseId }: { courseId: string }) {
         {
           course_id: courseId,
           course_name: course.title,
-          learner_mail: learner_mail.value,
+          learner_mail: learner_mail_value,
            learner_id: user.id,
            learner_name:user.name,
            teacher_name: course.instructor,
@@ -358,18 +367,18 @@ if (!course) {
   )
 }
 
-  const difficultyLabels = {
+  const difficultyLabels: any = {
     beginner: "Débutant",
     intermediate: "Intermédiaire",
     advanced: "Avancé",
   }
 
-  const fieldLabels = {
+  const fieldLabels: any = {
     livestock: "Élevage",
     agriculture: "Agriculture",
   }
 
-  const difficultyColors = {
+  const difficultyColors: any = {
     beginner: "bg-green-100 text-green-800 border-green-200",
     intermediate: "bg-blue-100 text-blue-800 border-blue-200",
     advanced: "bg-purple-100 text-purple-800 border-purple-200",
@@ -431,7 +440,7 @@ if (!course) {
               <h2 className="text-xl font-bold text-[#001A3B] mb-4">Instructeur</h2>
               <div className="flex items-start gap-4">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#001A3B] to-[#E0AB6C] flex items-center justify-center text-white text-xl font-bold">
-                  {course.instructor.split(" ").map((n) => n[0]).join("")}
+                  {course.instructor.split(" ").map((n:any) => n[0]).join("")}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-[#001A3B]">{teacherInfo ? teacherInfo?.last_name+" "+teacherInfo?.first_name : course.instructor}</h3>
@@ -448,7 +457,7 @@ if (!course) {
                 Modules ({course?.modules?.length || 0})
               </h2>
               <div className="space-y-3">
-                {course?.modules && course?.modules.map((module) => (
+                {course?.modules && course?.modules.map((module :any) => (
                   <div
                     key={module.id}
                     className="border border-[#E0AB6C]/20 rounded-lg overflow-hidden hover:border-[#E0AB6C]/40 transition-colors"
@@ -477,7 +486,7 @@ if (!course) {
                         <div>
                           <h4 className="text-sm font-semibold text-[#001A3B] mb-2">Vidéos</h4>
                           <div className="space-y-2">
-                            {module.lectures.map((lecture) => (
+                            {module.lectures.map((lecture :any) => (
                               <div
                                 key={lecture.id}
                                 className="flex items-center justify-between p-3 rounded-lg bg-[#001A3B]/5 hover:bg-[#001A3B]/10 transition-colors"
@@ -577,7 +586,7 @@ if (!course) {
                 </div>
               </div>
               <div className="space-y-4">
-                {course?.reviews && course?.reviews.map((review) => (
+                {course?.reviews && course?.reviews.map((review: any) => (
                   <div key={review.id} className="border-b border-[#E0AB6C]/20 pb-4 last:border-0 last:pb-0">
                     <div className="flex items-start justify-between mb-2">
                       <div>
