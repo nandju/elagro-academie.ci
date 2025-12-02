@@ -16,51 +16,51 @@ import { Progress } from "@/components/ui/progress"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 // Mock data
-const students = [
-  {
-    id: "1",
-    name: "Jean Kouamé",
-    email: "jean.kouame@example.com",
-    course: "Fondamentaux de l'Élevage de Volaille",
-    progress: 85,
-    quizScore: 92,
-    lastActivity: "Il y a 2 heures",
-    enrolledDate: "2024-01-15",
-    avatar: "/assets/images/instructors/instructor-1.jpg",
-  },
-  {
-    id: "2",
-    name: "Pierre Traoré",
-    email: "pierre.traore@example.com",
-    course: "Élevage de Porcs Moderne",
-    progress: 92,
-    quizScore: 88,
-    lastActivity: "Il y a 5 heures",
-    enrolledDate: "2024-02-20",
-    avatar: "/assets/images/instructors/instructor-2.jpg",
-  },
-  {
-    id: "3",
-    name: "Sophie Koné",
-    email: "sophie.kone@example.com",
-    course: "Fondamentaux de l'Élevage de Volaille",
-    progress: 65,
-    quizScore: 75,
-    lastActivity: "Il y a 1 jour",
-    enrolledDate: "2024-03-10",
-    avatar: "/assets/images/instructors/instructor-3.jpg",
-  },
-  {
-    id: "4",
-    name: "Amadou Sarr",
-    email: "amadou.sarr@example.com",
-    course: "Techniques d'Élevage de Ruminants",
-    progress: 100,
-    quizScore: 95,
-    lastActivity: "Il y a 3 heures",
-    enrolledDate: "2024-01-25",
-    avatar: "/assets/images/instructors/instructor-4.jpg",
-  },
+const students: any[] = [
+  // {
+  //   id: "1",
+  //   name: "Jean Kouamé",
+  //   email: "jean.kouame@example.com",
+  //   course: "Fondamentaux de l'Élevage de Volaille",
+  //   progress: 85,
+  //   quizScore: 92,
+  //   lastActivity: "Il y a 2 heures",
+  //   enrolledDate: "2024-01-15",
+  //   avatar: "/assets/images/instructors/instructor-1.jpg",
+  // },
+  // {
+  //   id: "2",
+  //   name: "Pierre Traoré",
+  //   email: "pierre.traore@example.com",
+  //   course: "Élevage de Porcs Moderne",
+  //   progress: 92,
+  //   quizScore: 88,
+  //   lastActivity: "Il y a 5 heures",
+  //   enrolledDate: "2024-02-20",
+  //   avatar: "/assets/images/instructors/instructor-2.jpg",
+  // },
+  // {
+  //   id: "3",
+  //   name: "Sophie Koné",
+  //   email: "sophie.kone@example.com",
+  //   course: "Fondamentaux de l'Élevage de Volaille",
+  //   progress: 65,
+  //   quizScore: 75,
+  //   lastActivity: "Il y a 1 jour",
+  //   enrolledDate: "2024-03-10",
+  //   avatar: "/assets/images/instructors/instructor-3.jpg",
+  // },
+  // {
+  //   id: "4",
+  //   name: "Amadou Sarr",
+  //   email: "amadou.sarr@example.com",
+  //   course: "Techniques d'Élevage de Ruminants",
+  //   progress: 100,
+  //   quizScore: 95,
+  //   lastActivity: "Il y a 3 heures",
+  //   enrolledDate: "2024-01-25",
+  //   avatar: "/assets/images/instructors/instructor-4.jpg",
+  // },
 ]
 
 export default function InstructorStudentsPage() {
@@ -95,7 +95,8 @@ export default function InstructorStudentsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-[#001A3B]">
-                {Math.round(students.reduce((acc, s) => acc + s.progress, 0) / students.length)}%
+                {/* {Math.round(students.reduce((acc, s) => acc + (s.progress || 0) , 0) / students.length)}% */}
+                {students.length > 0 ? Math.round(students.reduce((acc, s) => acc + (s.progress || 0), 0) / students.length) : 0}%
               </div>
             </CardContent>
           </Card>
@@ -107,7 +108,7 @@ export default function InstructorStudentsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-[#001A3B]">
-                {Math.round(students.reduce((acc, s) => acc + s.quizScore, 0) / students.length)}%
+                {students.length > 0 ? Math.round(students.reduce((acc, s) => acc + (s.quizScore || 0), 0) / students.length) : 0}%
               </div>
             </CardContent>
           </Card>

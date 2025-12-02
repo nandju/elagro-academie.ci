@@ -1,11 +1,19 @@
-"use client"
+"use client";
 
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
-import { Bookmark, BookOpen, Clock, Star, Trash2, Play } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+import { Bookmark, BookOpen, Clock, Star, Trash2, Play } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import supabase from "@/lib/supabase";
 
 // Mock data
 const savedCourses = [
@@ -39,9 +47,57 @@ const savedCourses = [
     savedDate: "2024-01-28",
     image: "/assets/images/illustrations/page-accueil/porc.png",
   },
-]
+];
 
 export default function SavedCoursesPage() {
+  const [savedCourses, setSavedCourses] = useState<any[]>([]);
+
+  const removeCourse = async (id: string) => {
+    const { data, error } = await supabase
+      .from("enrolled")
+      .update({ statut: "unavailable" })
+      .eq("course_id", id);
+  };
+
+  const fetchCourses = async () => {
+    const basicsInfo = await cookieStore.get("user-connected");
+    if (!basicsInfo) return;
+    const value: any = basicsInfo.value;
+    const decoded = decodeURIComponent(value);
+    const datas = JSON.parse(decoded);
+    const { data, error } = await supabase
+      .from("enrolled")
+      .select("*")
+      .neq("statut", "unavailable")
+      .eq("learner_id", datas.id);
+    if (error) {
+      console.error("Error fetching saved courses:", error);
+    } else {
+      if (data && data.length > 0) {
+        data.map(async (course: any) => {
+          const { data: courseData, error: courseError } = await supabase
+            .from("courses")
+            .select("*")
+            .eq("id", course.course_id)
+            .single();
+          if (courseError) {
+            console.error("Error fetching course details:", courseError);
+          } else {
+            setSavedCourses((prev) =>
+              prev.some((c) => c.id === courseData.id)
+                ? prev
+                : [...prev, courseData]
+            );
+          }
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
   return (
     <DashboardLayout>
       <div className="p-4 lg:p-6 space-y-6">
@@ -59,7 +115,10 @@ export default function SavedCoursesPage() {
         {savedCourses.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
             {savedCourses.map((course) => (
-              <Card key={course.id} className="hover:shadow-lg transition-shadow">
+              <Card
+                key={course.id}
+                className="hover:shadow-lg transition-shadow"
+              >
                 <div className="relative h-40 bg-gradient-to-br from-[#001A3B]/20 to-[#E0AB6C]/20 rounded-t-lg flex items-center justify-center">
                   <span className="text-4xl">📚</span>
                   <div className="absolute top-2 right-2">
@@ -95,13 +154,15 @@ export default function SavedCoursesPage() {
                   <div className="flex items-center gap-4 text-sm text-[#001A3B]/60">
                     <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
-                      <span>{course.duration}</span>
+                      <span>{course.duration || "N/A"}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Bookmark className="w-4 h-4" />
                       <span>
                         Sauvegardé le{" "}
-                        {new Date(course.savedDate).toLocaleDateString("fr-FR")}
+                        {new Date(course.created_at).toLocaleDateString(
+                          "fr-FR"
+                        )}
                       </span>
                     </div>
                   </div>
@@ -146,6 +207,5 @@ export default function SavedCoursesPage() {
         )}
       </div>
     </DashboardLayout>
-  )
+  );
 }
-

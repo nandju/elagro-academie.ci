@@ -22,37 +22,39 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
+import { useEffect, useState } from "react"
+import supabase from "@/lib/supabase"
 
 // Mock data
-const courses = [
-  {
-    id: "1",
-    title: "Fondamentaux de l'Élevage de Volaille",
-    category: "Élevage",
-    students: 245,
-    status: "published",
-    createdAt: "2024-01-15",
-    rating: 4.8,
-  },
-  {
-    id: "2",
-    title: "Élevage de Porcs Moderne",
-    category: "Élevage",
-    students: 156,
-    status: "published",
-    createdAt: "2024-02-20",
-    rating: 4.9,
-  },
-  {
-    id: "3",
-    title: "Techniques d'Élevage de Ruminants",
-    category: "Élevage",
-    students: 98,
-    status: "draft",
-    createdAt: "2024-03-10",
-    rating: 4.7,
-  },
-]
+// const courses = [
+//   {
+//     id: "1",
+//     title: "Fondamentaux de l'Élevage de Volaille",
+//     category: "Élevage",
+//     students: 245,
+//     status: "published",
+//     createdAt: "2024-01-15",
+//     rating: 4.8,
+//   },
+//   {
+//     id: "2",
+//     title: "Élevage de Porcs Moderne",
+//     category: "Élevage",
+//     students: 156,
+//     status: "published",
+//     createdAt: "2024-02-20",
+//     rating: 4.9,
+//   },
+//   {
+//     id: "3",
+//     title: "Techniques d'Élevage de Ruminants",
+//     category: "Élevage",
+//     students: 98,
+//     status: "draft",
+//     createdAt: "2024-03-10",
+//     rating: 4.7,
+//   },
+// ]
 
 const categoryColors = {
   "Élevage": "bg-[#9A000D]",
@@ -60,6 +62,26 @@ const categoryColors = {
 }
 
 export default function InstructorCoursesPage() {
+  const [courses, setCourses] = useState<any[]>([]);
+  const fetchCourses = async () => {
+      const basicsInfo = await cookieStore.get("user-connected")
+    if(!basicsInfo) return
+    const value:any = basicsInfo.value
+    const decoded = decodeURIComponent(value);
+    const datas = JSON.parse(decoded);
+      const {data, error} = await supabase.from('courses').select('*').eq('status', 'published').eq('instructor_id', datas?.id);
+    if (error) {
+      console.error("Erreur lors de la récupération des formations :", error);
+    } else {
+      console.log("Formations récupérées avec succès :", data);
+      setCourses(data || []);
+    }
+  }
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+  
   return (
     <InstructorLayout>
       <div className="p-6 space-y-6">

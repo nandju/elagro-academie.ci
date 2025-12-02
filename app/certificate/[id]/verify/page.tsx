@@ -15,40 +15,52 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
+import supabase from "@/lib/supabase"
 
 // Mock data - In a real app, this would be fetched from an API
-const certificates: Record<string, any> = {
-  "CERT-001": {
-    id: "CERT-001",
-    courseName: "Fondamentaux de l'Élevage de Volaille",
-    studentName: "Jean Kouamé",
-    issueDate: "2024-02-15",
-    score: 85,
-    verified: true,
-    category: "Élevage",
-  },
-  "CERT-002": {
-    id: "CERT-002",
-    courseName: "Gestion des Cultures Agricoles",
-    studentName: "Jean Kouamé",
-    issueDate: "2024-02-10",
-    score: 92,
-    verified: true,
-    category: "Agriculture",
-  },
-}
+// const certificates: Record<string, any> = {
+//   "CERT-001": {
+//     id: "CERT-001",
+//     courseName: "Fondamentaux de l'Élevage de Volaille",
+//     studentName: "Jean Kouamé",
+//     issueDate: "2024-02-15",
+//     score: 85,
+//     verified: true,
+//     category: "Élevage",
+//   },
+//   "CERT-002": {
+//     id: "CERT-002",
+//     courseName: "Gestion des Cultures Agricoles",
+//     studentName: "Jean Kouamé",
+//     issueDate: "2024-02-10",
+//     score: 92,
+//     verified: true,
+//     category: "Agriculture",
+//   },
+// }
 
 export default function VerifyCertificatePage() {
   const params = useParams()
   const certificateId = params.id as string
   const [certificate, setCertificate] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [certificates, setCertificates] = useState<any>()
+  const getCertificats = async () => {
+    const {data, error} = await supabase.from('certificats').select('*').eq('certificat_id', certificateId).single()
+    if (error) {
+      console.log('error', error)
+    } else {
+     
+      setCertificates(data)
+    }
+  }
 
   useEffect(() => {
     // Simulate API call
+    getCertificats()
     setTimeout(() => {
-      const cert = certificates[certificateId]
-      setCertificate(cert)
+      // const cert = certificates[certificateId]
+      // setCertificate(cert)
       setLoading(false)
     }, 500)
   }, [certificateId])
@@ -64,7 +76,7 @@ export default function VerifyCertificatePage() {
     )
   }
 
-  if (!certificate) {
+  if (!certificates) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <Card className="max-w-md w-full">
@@ -140,7 +152,7 @@ export default function VerifyCertificatePage() {
               Certificat de Réussite
             </CardTitle>
             <CardDescription className="text-center">
-              {certificate.courseName}
+              {certificates.course_name}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -148,34 +160,34 @@ export default function VerifyCertificatePage() {
               <div className="text-center space-y-4">
                 <p className="text-[#001A3B]/70">Ceci certifie que</p>
                 <h3 className="text-2xl font-bold text-[#001A3B]">
-                  {certificate.studentName}
+                  {certificates.studentName}
                 </h3>
                 <p className="text-[#001A3B]/70">
                   a terminé avec succès le cours
                 </p>
                 <h4 className="text-xl font-bold text-[#E0AB6C]">
-                  {certificate.courseName}
+                  {certificates.course_name}
                 </h4>
                 <div className="flex items-center justify-center gap-6 mt-6">
                   <div className="flex items-center gap-2 text-[#001A3B]/70">
                     <Calendar className="w-5 h-5" />
                     <span>
-                      {new Date(certificate.issueDate).toLocaleDateString("fr-FR")}
+                      {new Date(certificates.created_at).toLocaleDateString("fr-FR")}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-[#001A3B]/70">
                     <FileText className="w-5 h-5" />
-                    <span>Score: {certificate.score}%</span>
+                    <span>Score: {certificates.score || 0}%</span>
                   </div>
                 </div>
                 <div className="mt-8">
                   <Badge variant="outline" className="text-[#001A3B]">
-                    {certificate.category}
+                    {certificates.category}
                   </Badge>
                 </div>
                 <div className="mt-6 pt-6 border-t border-[#E0AB6C]/20">
                   <p className="text-xs text-[#001A3B]/60">
-                    Certificat ID: {certificate.id}
+                    Certificat ID: {certificates.certificat_id}
                   </p>
                   <div className="flex justify-center mt-4">
                     <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center">
@@ -201,14 +213,14 @@ export default function VerifyCertificatePage() {
                 <p className="text-sm font-medium text-[#001A3B]/60 mb-1">
                   ID du Certificat
                 </p>
-                <p className="text-[#001A3B] font-mono">{certificate.id}</p>
+                <p className="text-[#001A3B] font-mono">{certificates.certificat_id}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-[#001A3B]/60 mb-1">
                   Date d'émission
                 </p>
                 <p className="text-[#001A3B]">
-                  {new Date(certificate.issueDate).toLocaleDateString("fr-FR")}
+                  {new Date(certificates.created_at).toLocaleDateString("fr-FR")}
                 </p>
               </div>
               <div>
@@ -225,7 +237,7 @@ export default function VerifyCertificatePage() {
                   Score
                 </p>
                 <p className="text-[#001A3B] font-semibold">
-                  {certificate.score}%
+                  {certificates.score}%
                 </p>
               </div>
             </div>

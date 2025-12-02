@@ -1,28 +1,27 @@
-"use client"
+"use client";
 
-import { InstructorLayout } from "@/components/instructor/instructor-layout"
-import { 
-  TrendingUp, 
-  Users, 
-  BookOpen, 
+import { InstructorLayout } from "@/components/instructor/instructor-layout";
+import {
+  TrendingUp,
+  Users,
+  BookOpen,
   Award,
   BarChart3,
   PieChart,
-  Clock
-} from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
+  Clock,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import supabase from "@/lib/supabase";
+import { useEffect, useState } from "react";
 
-// Mock data
-const overallStats = {
-  totalStudents: 245,
-  activeStudents: 189,
-  totalCourses: 5,
-  completionRate: 78,
-  averageScore: 82,
-  averageWatchTime: "2h 30min",
-}
 
 const coursePerformance = [
   {
@@ -46,9 +45,43 @@ const coursePerformance = [
     completionRate: 75,
     averageScore: 78,
   },
-]
+];
 
 export default function InstructorStatisticsPage() {
+
+const [overallStats, setOverallStats] = useState({
+  totalStudents: 0,
+  activeStudents: 0,
+  totalCourses: 0,
+  completionRate: 0,
+  averageScore: 0,
+  averageWatchTime: "0h 0min",
+});
+
+const [courses, setCourses] = useState<any[]>([]);
+
+
+  const getallData = async () => {
+    const { data, error } = await supabase
+      .from("courses")
+      .select("title")
+      .eq("status", "published");
+      // .eq("instructor_id", "instructor_123");
+    if (error) {
+      console.error("Erreur lors de la récupération des cours:", error);
+    } else {setOverallStats(prevStats => ({ ...prevStats, totalCourses: data.length }))
+      setCourses(data);
+    }
+    setOverallStats(prevStats => ({ ...prevStats, activeStudents: 0 }));
+    setOverallStats(prevStats => ({ ...prevStats, totalStudents: 0 }));
+    setOverallStats(prevStats => ({ ...prevStats, averageScore: 0 }));
+    setOverallStats(prevStats => ({ ...prevStats, completionRate: 0 }));
+  };
+
+  useEffect(() => {
+    getallData();
+  }, []);
+
   return (
     <InstructorLayout>
       <div className="p-6 space-y-6">
@@ -87,10 +120,10 @@ export default function InstructorStatisticsPage() {
               <BookOpen className="w-4 h-4 text-green-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[#001A3B]">{overallStats.totalCourses}</div>
-              <p className="text-xs text-[#001A3B]/60 mt-1">
-                Cours actifs
-              </p>
+              <div className="text-2xl font-bold text-[#001A3B]">
+                {overallStats.totalCourses}
+              </div>
+              <p className="text-xs text-[#001A3B]/60 mt-1">Cours actifs</p>
             </CardContent>
           </Card>
 
@@ -102,7 +135,9 @@ export default function InstructorStatisticsPage() {
               <TrendingUp className="w-4 h-4 text-purple-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[#001A3B]">{overallStats.completionRate}%</div>
+              <div className="text-2xl font-bold text-[#001A3B]">
+                {overallStats.completionRate}%
+              </div>
               <Progress value={overallStats.completionRate} className="mt-2" />
             </CardContent>
           </Card>
@@ -115,7 +150,9 @@ export default function InstructorStatisticsPage() {
               <Clock className="w-4 h-4 text-orange-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[#001A3B]">{overallStats.averageWatchTime}</div>
+              <div className="text-2xl font-bold text-[#001A3B]">
+                {overallStats.averageWatchTime}
+              </div>
               <p className="text-xs text-[#001A3B]/60 mt-1">
                 Temps de visionnage
               </p>
@@ -135,22 +172,22 @@ export default function InstructorStatisticsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {coursePerformance.map((course, index) => (
+              {courses.map((course, index) => (
                 <div key={index}>
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-sm text-[#001A3B] line-clamp-1">
-                      {course.name}
+                      {course.title}
                     </h4>
-                    <Badge variant="outline">{course.completionRate}%</Badge>
+                    <Badge variant="outline">{course.completionRate || 0}%</Badge>
                   </div>
                   <div className="flex items-center gap-4 text-xs text-[#001A3B]/60 mb-2">
-                    <span>{course.enrolled} inscrits</span>
+                    <span>{course.enrolled || 0} inscrits</span>
                     <span>•</span>
-                    <span>{course.completed} complétés</span>
+                    <span>{course.completed || 0} complétés</span>
                     <span>•</span>
-                    <span>Score moyen: {course.averageScore}%</span>
+                    <span>Score moyen: {course.averageScore || 0}%</span>
                   </div>
-                  <Progress value={course.completionRate} className="h-2" />
+                  <Progress value={course.completionRate || 0} className="h-2" />
                 </div>
               ))}
             </div>
@@ -169,7 +206,9 @@ export default function InstructorStatisticsPage() {
               <div className="text-center py-8 text-[#001A3B]/60">
                 <BarChart3 className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Graphique de taux de réussite</p>
-                <p className="text-sm mt-2">À implémenter avec Recharts ou Chart.js</p>
+                <p className="text-sm mt-2">
+                  À implémenter avec Recharts ou Chart.js
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -184,13 +223,14 @@ export default function InstructorStatisticsPage() {
               <div className="text-center py-8 text-[#001A3B]/60">
                 <PieChart className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Graphique d'étudiants actifs</p>
-                <p className="text-sm mt-2">À implémenter avec Recharts ou Chart.js</p>
+                <p className="text-sm mt-2">
+                  À implémenter avec Recharts ou Chart.js
+                </p>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
     </InstructorLayout>
-  )
+  );
 }
-

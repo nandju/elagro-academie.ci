@@ -16,8 +16,11 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 
-// Mock data
-const overallStats = {
+// ...existing code...
+import { useEffect, useState } from "react"
+import supabase from "@/lib/supabase"
+
+const defaultOverallStats = {
   totalUsers: 1250,
   activeUsers: 892,
   totalCourses: 45,
@@ -25,40 +28,82 @@ const overallStats = {
   totalCertificates: 320,
   completionRate: 78,
   averageScore: 82,
-}
-
-const courseStats = [
-  {
-    name: "Fondamentaux de l'Élevage de Volaille",
-    enrolled: 245,
-    completed: 198,
-    completionRate: 81,
-    averageScore: 85,
-  },
-  {
-    name: "Gestion des Cultures Agricoles",
-    enrolled: 189,
-    completed: 142,
-    completionRate: 75,
-    averageScore: 78,
-  },
-  {
-    name: "Élevage de Porcs Moderne",
-    enrolled: 156,
-    completed: 128,
-    completionRate: 82,
-    averageScore: 88,
-  },
-]
-
-const categoryDistribution = [
-  { name: "Élevage", value: 40, color: "bg-[#9A000D]" },
-  { name: "Agriculture", value: 30, color: "bg-[#269940]" },
-  { name: "Commerce", value: 20, color: "bg-[#FFD463]" },
-  { name: "Autres", value: 10, color: "bg-[#1079CE]" },
-]
+};
 
 export default function AdminStatisticsPage() {
+  const [overallStats, setOverallStats] = useState(defaultOverallStats);
+  const [courseStats, setCourseStats] = useState<any[]>([]);
+  const [categoryDistribution, setCategoryDistribution] = useState([
+    { name: "Élevage", value: 0, color: "bg-[#9A000D]" },
+    { name: "Agriculture", value: 0, color: "bg-[#269940]" },
+    { name: "Commerce", value: 0, color: "bg-[#FFD463]" },
+    { name: "Autres", value: 0, color: "bg-[#1079CE]" },
+  ]);
+// ...existing code...
+
+const fetchStatistics = async () => {
+  const { data, error } = await supabase.from('users').select('id, status');
+  if (error) {
+    console.error("Error fetching total users:", error);
+    return;
+  }else {
+    setOverallStats((prev) => ({
+      ...prev,
+      totalUsers: data?.length || 0,
+    }));
+    setOverallStats((prev) => ({
+      ...prev,
+      activeUsers: data?.filter((user:any) => user.status == "actif").length || 0,
+    }));
+  }
+  // Fetch other statistics similarly and update state
+  const { data: coursesData, error: coursesError } = await supabase.from('courses').select('*');
+  if (coursesError) {
+    console.error("Error fetching courses:", coursesError);
+    return;
+  } else {
+
+    ////update de la répartition par catégorie
+    const categoryCounts: { [key: string]: number } = {};
+    coursesData?.forEach((course:any) => {
+      categoryCounts[course.category] = (categoryCounts[course.category] || 0) + 1;
+    });
+    const totalCourses = coursesData?.length || 1;
+    const distribution = Object.keys(categoryCounts).map((category, index) => ({
+      name: category.toUpperCase(),
+      value: parseFloat(((categoryCounts[category] / totalCourses) * 100).toFixed(2)),
+      color: categoryDistribution[index]?.color || "bg-gray-500",
+    }));
+    setCategoryDistribution(distribution);
+
+    ////ajout au tableau de stats globales
+    setOverallStats((prev) => ({
+      ...prev,
+      totalCourses: coursesData?.length || 0,
+      activeCourses: coursesData?.filter((course:any) => course.status === "published").length || 0,
+    }));
+    const courseStatsData = coursesData?.map((course:any) => ({
+      name: course.title,
+      enrolled: course.students,}
+    ));
+    setCourseStats(courseStatsData || []);
+  }
+  setOverallStats((prev) => ({
+    ...prev,
+    completionRate:0,
+    totalCertificates:0,
+    averageScore:0,
+
+  }));
+}
+
+
+
+useEffect(() => {
+  fetchStatistics();
+}, []);
+  
+  
   return (
     <AdminLayout>
       <div className="p-6 space-y-6">
@@ -164,16 +209,16 @@ export default function AdminStatisticsPage() {
                       <h4 className="font-semibold text-sm text-[#001A3B] line-clamp-1">
                         {course.name}
                       </h4>
-                      <Badge variant="outline">{course.completionRate}%</Badge>
+                      <Badge variant="outline">{course.completionRate || 0}%</Badge>
                     </div>
                     <div className="flex items-center gap-4 text-xs text-[#001A3B]/60 mb-2">
-                      <span>{course.enrolled} inscrits</span>
+                      <span>{course.enrolled || 0} inscrits</span>
                       <span>•</span>
-                      <span>{course.completed} complétés</span>
+                      <span>{course.completed || 0} complétés</span>
                       <span>•</span>
-                      <span>Score moyen: {course.averageScore}%</span>
+                      <span>Score moyen: {course.averageScore || 0}%</span>
                     </div>
-                    <Progress value={course.completionRate} className="h-2" />
+                    <Progress value={course.completionRate || 0} className="h-2" />
                   </div>
                 ))}
               </div>

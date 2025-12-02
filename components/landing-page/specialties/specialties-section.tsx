@@ -273,7 +273,7 @@ export function SpecialtiesSection() {
                   {getLocalizedText(selectedSpecialty.description, language)}
                 </p>
 
-                <a href="/auth/register">
+                <a href="/register">
                   <Button size="lg" className="bg-[#E0AB6C] hover:bg-[#E0AB6C]/90 text-[#001A3B] font-semibold px-8 shadow-lg hover:shadow-xl transition-all duration-300 group">
                     {t.startTraining}
                     <ChevronRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />

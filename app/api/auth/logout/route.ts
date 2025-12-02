@@ -12,6 +12,7 @@ export async function POST() {
   // Supprimer les cookies
   response.cookies.delete("auth-token")
   response.cookies.delete("user-email")
+  response.cookies.delete("user-connected")
 
   return response
 }

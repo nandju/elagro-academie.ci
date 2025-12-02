@@ -1,90 +1,137 @@
-"use client"
+"use client";
 
-import { InstructorLayout } from "@/components/instructor/instructor-layout"
-import { 
-  BookOpen, 
-  Users, 
-  TrendingUp, 
+import { InstructorLayout } from "@/components/instructor/instructor-layout";
+import {
+  BookOpen,
+  Users,
+  TrendingUp,
   Award,
   Clock,
   CheckCircle2,
-  ArrowRight
-} from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import Link from "next/link"
+  ArrowRight,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import supabase from "@/lib/supabase";
 
 // Mock data
-const stats = {
-  activeCourses: 5,
-  totalStudents: 245,
-  completionRate: 78,
-  averageRating: 4.8,
-}
+// const stats = {
+//   activeCourses: 5,
+//   totalStudents: 245,
+//   completionRate: 78,
+//   averageRating: 4.8,
+// }
 
-const myCourses = [
-  {
-    id: "1",
-    title: "Fondamentaux de l'Élevage de Volaille",
-    students: 245,
-    completionRate: 81,
-    rating: 4.8,
-    status: "published",
-    category: "Élevage",
-  },
-  {
-    id: "2",
-    title: "Élevage de Porcs Moderne",
-    students: 156,
-    completionRate: 82,
-    rating: 4.9,
-    status: "published",
-    category: "Élevage",
-  },
-  {
-    id: "3",
-    title: "Techniques d'Élevage de Ruminants",
-    students: 98,
-    completionRate: 75,
-    rating: 4.7,
-    status: "draft",
-    category: "Élevage",
-  },
-]
+// const myCourses = [
+//   {
+//     id: "1",
+//     title: "Fondamentaux de l'Élevage de Volaille",
+//     students: 245,
+//     completionRate: 81,
+//     rating: 4.8,
+//     status: "published",
+//     category: "Élevage",
+//   },
+//   {
+//     id: "2",
+//     title: "Élevage de Porcs Moderne",
+//     students: 156,
+//     completionRate: 82,
+//     rating: 4.9,
+//     status: "published",
+//     category: "Élevage",
+//   },
+//   {
+//     id: "3",
+//     title: "Techniques d'Élevage de Ruminants",
+//     students: 98,
+//     completionRate: 75,
+//     rating: 4.7,
+//     status: "draft",
+//     category: "Élevage",
+//   },
+// ]
 
-const recentStudents = [
-  {
-    id: "1",
-    name: "Jean Kouamé",
-    course: "Fondamentaux de l'Élevage de Volaille",
-    progress: 85,
-    lastActivity: "Il y a 2 heures",
-  },
-  {
-    id: "2",
-    name: "Pierre Traoré",
-    course: "Élevage de Porcs Moderne",
-    progress: 92,
-    lastActivity: "Il y a 5 heures",
-  },
-  {
-    id: "3",
-    name: "Sophie Koné",
-    course: "Fondamentaux de l'Élevage de Volaille",
-    progress: 65,
-    lastActivity: "Il y a 1 jour",
-  },
-]
+const recentStudents: any[] = [
+  // {
+  //   id: "1",
+  //   name: "Jean Kouamé",
+  //   course: "Fondamentaux de l'Élevage de Volaille",
+  //   progress: 85,
+  //   lastActivity: "Il y a 2 heures",
+  // },
+  // {
+  //   id: "2",
+  //   name: "Pierre Traoré",
+  //   course: "Élevage de Porcs Moderne",
+  //   progress: 92,
+  //   lastActivity: "Il y a 5 heures",
+  // },
+  // {
+  //   id: "3",
+  //   name: "Sophie Koné",
+  //   course: "Fondamentaux de l'Élevage de Volaille",
+  //   progress: 65,
+  //   lastActivity: "Il y a 1 jour",
+  // },
+];
 
 export default function InstructorDashboardPage() {
+  const [stats, setStats] = useState({
+    activeCourses: 5,
+    totalStudents: 245,
+    completionRate: 78,
+    averageRating: 4.8,
+  });
+
+  const [myCourses, setMyCourses] = useState<any[]>([]);
+
+  const getallData = async () => {
+      const basicsInfo = await cookieStore.get("user-connected")
+    if(!basicsInfo) return
+    const value:any = basicsInfo.value
+    const decoded = decodeURIComponent(value);
+    const datas = JSON.parse(decoded);
+    const { data, error } = await supabase
+      .from("courses")
+      .select("*")
+      .eq("status", "published")
+      .eq("instructor_id", datas?.id);
+    if (error) {
+      console.error("Erreur lors de la récupération des cours:", error);
+    } else {
+      setStats((prevStats) => ({
+        ...prevStats,
+        activeCourses: data.length,
+      }));
+      setMyCourses(data);
+    }
+    setStats((prevStats) => ({ ...prevStats, totalStudents: 0 }));
+    setStats((prevStats) => ({ ...prevStats, averageRating : 0 }));
+    setStats((prevStats) => ({ ...prevStats, completionRate: 0 }));
+  };
+
+  useEffect(() => {
+    getallData();
+  }, []);
   return (
     <InstructorLayout>
       <div className="p-6 space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-[#001A3B]">Tableau de bord Formateur</h1>
+          <h1 className="text-3xl font-bold text-[#001A3B]">
+            Tableau de bord Formateur
+          </h1>
           <p className="text-[#001A3B]/70 mt-1">
             Bienvenue dans votre espace de gestion des formations
           </p>
@@ -100,7 +147,9 @@ export default function InstructorDashboardPage() {
               <BookOpen className="w-4 h-4 text-blue-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[#001A3B]">{stats.activeCourses}</div>
+              <div className="text-2xl font-bold text-[#001A3B]">
+                {stats.activeCourses}
+              </div>
               <p className="text-xs text-[#001A3B]/60 mt-1">
                 Formations publiées
               </p>
@@ -115,7 +164,9 @@ export default function InstructorDashboardPage() {
               <Users className="w-4 h-4 text-green-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[#001A3B]">{stats.totalStudents}</div>
+              <div className="text-2xl font-bold text-[#001A3B]">
+                {stats.totalStudents}
+              </div>
               <p className="text-xs text-[#001A3B]/60 mt-1">
                 Total des inscriptions
               </p>
@@ -130,7 +181,9 @@ export default function InstructorDashboardPage() {
               <TrendingUp className="w-4 h-4 text-purple-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[#001A3B]">{stats.completionRate}%</div>
+              <div className="text-2xl font-bold text-[#001A3B]">
+                {stats.completionRate}%
+              </div>
               <Progress value={stats.completionRate} className="mt-2" />
             </CardContent>
           </Card>
@@ -143,10 +196,10 @@ export default function InstructorDashboardPage() {
               <Award className="w-4 h-4 text-orange-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[#001A3B]">{stats.averageRating}</div>
-              <p className="text-xs text-[#001A3B]/60 mt-1">
-                Sur 5 étoiles
-              </p>
+              <div className="text-2xl font-bold text-[#001A3B]">
+                {stats.averageRating}
+              </div>
+              <p className="text-xs text-[#001A3B]/60 mt-1">Sur 5 étoiles</p>
             </CardContent>
           </Card>
         </div>
@@ -161,7 +214,11 @@ export default function InstructorDashboardPage() {
                     Mes Formations
                   </CardTitle>
                   <Link href="/instructor/courses">
-                    <Button variant="ghost" size="sm" className="text-[#E0AB6C]">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-[#E0AB6C]"
+                    >
                       Voir tout <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                   </Link>
@@ -176,22 +233,30 @@ export default function InstructorDashboardPage() {
                     >
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-semibold text-[#001A3B]">{course.title}</h3>
+                          <h3 className="font-semibold text-[#001A3B]">
+                            {course.title}
+                          </h3>
                           <Badge
-                            variant={course.status === "published" ? "default" : "outline"}
+                            variant={
+                              course.status === "published"
+                                ? "default"
+                                : "outline"
+                            }
                             className={
                               course.status === "published"
                                 ? "bg-green-500 text-white"
                                 : "bg-yellow-500 text-white"
                             }
                           >
-                            {course.status === "published" ? "Publié" : "Brouillon"}
+                            {course.status === "published"
+                              ? "Publié"
+                              : "Brouillon"}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-4 text-sm text-[#001A3B]/60 mb-2">
-                          <span>{course.students} étudiants</span>
+                          <span>{course.students || 0} étudiants</span>
                           <span>•</span>
-                          <span>Note: {course.rating}/5</span>
+                          <span>Note: {course.rating || 0}/5</span>
                           <span>•</span>
                           <Badge variant="outline" className="text-xs">
                             {course.category}
@@ -200,13 +265,21 @@ export default function InstructorDashboardPage() {
                         <div className="space-y-1">
                           <div className="flex items-center justify-between text-xs text-[#001A3B]/60">
                             <span>Taux de complétion</span>
-                            <span className="font-medium">{course.completionRate}%</span>
+                            <span className="font-medium">
+                              {course.completionRate || 0}%
+                            </span>
                           </div>
-                          <Progress value={course.completionRate} className="h-2" />
+                          <Progress
+                            value={course.completionRate || 0}
+                            className="h-2"
+                          />
                         </div>
                       </div>
                       <Link href={`/instructor/courses/${course.id}/chapters`}>
-                        <Button size="sm" className="bg-[#001A3B] hover:bg-[#001A3B]/90">
+                        <Button
+                          size="sm"
+                          className="bg-[#001A3B] hover:bg-[#001A3B]/90"
+                        >
                           Gérer
                         </Button>
                       </Link>
@@ -235,15 +308,21 @@ export default function InstructorDashboardPage() {
                       <h4 className="font-semibold text-sm text-[#001A3B] mb-1">
                         {student.name}
                       </h4>
-                      <p className="text-xs text-[#001A3B]/70 mb-2">{student.course}</p>
+                      <p className="text-xs text-[#001A3B]/70 mb-2">
+                        {student.course}
+                      </p>
                       <div className="space-y-1">
                         <div className="flex items-center justify-between text-xs text-[#001A3B]/60">
                           <span>Progression</span>
-                          <span className="font-medium">{student.progress}%</span>
+                          <span className="font-medium">
+                            {student.progress}%
+                          </span>
                         </div>
                         <Progress value={student.progress} className="h-1.5" />
                       </div>
-                      <p className="text-xs text-[#001A3B]/50 mt-2">{student.lastActivity}</p>
+                      <p className="text-xs text-[#001A3B]/50 mt-2">
+                        {student.lastActivity}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -293,6 +372,5 @@ export default function InstructorDashboardPage() {
         </Card>
       </div>
     </InstructorLayout>
-  )
+  );
 }
-

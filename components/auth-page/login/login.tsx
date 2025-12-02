@@ -33,13 +33,21 @@ function LoginForm() {
 
       const data = await response.json()
 
-      if (response.ok && data.success) {
+      if (response.ok && data.success && data.user.role == "student") {
         // Rediriger vers la page demandée ou le dashboard
         const redirect = searchParams.get("redirect") || "/dashboard"
         router.push(redirect)
         router.refresh()
-      } else {
-        setError(data.message || "Email ou mot de passe incorrect")
+      }else if(response.ok && data.success && data.user.role == "admin"){
+      const redirect = searchParams.get("redirect") || "/admin/dashboard"
+        router.push(redirect)
+        router.refresh()
+      }else if (response.ok && data.success && data.user.role == "instructor"){
+      const redirect = searchParams.get("redirect") || "/instructor/dashboard"
+        router.push(redirect)
+        router.refresh()
+      }else {
+        setError(data.message+"error" || "Email ou mot de passe incorrect")
       }
     } catch (err) {
       setError("Une erreur est survenue. Veuillez réessayer.")
@@ -126,14 +134,14 @@ function LoginForm() {
       </div>
 
       {/* Use Code Button */}
-      <Button
+      {/* <Button
         type="button"
         variant="outline"
         className="w-full border-2 py-6 font-medium text-white transition-all hover:bg-white/10"
         style={{ borderColor: '#E0AB6C', backgroundColor: 'transparent' }}
       >
         Utiliser un code d'identification
-      </Button>
+      </Button> */}
 
       {/* Forgot Password */}
       <div className="text-center">
@@ -147,7 +155,7 @@ function LoginForm() {
       </div>
 
       {/* Remember Me */}
-      <div className="flex items-center space-x-2 pt-2">
+      {/* <div className="flex items-center space-x-2 pt-2">
         <input
           type="checkbox"
           id="remember"
@@ -159,7 +167,7 @@ function LoginForm() {
         <label htmlFor="remember" className="text-sm text-white">
           Se souvenir de moi
         </label>
-      </div>
+      </div> */}
 
       {/* Sign Up Link */}
       <div className="pt-4 text-center text-sm text-gray-400">
