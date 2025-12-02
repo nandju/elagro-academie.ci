@@ -49,16 +49,20 @@ export default function InstructorNewCoursePage() {
 
     const { data, error } = await supabase.storage
       .from("elagro_bucket")
-      .upload(`public/pdf/${timestamp}`, pdfFile, {
+      .upload(`public/pdf/${timestamp}`, pdfFile ? pdfFile : new File([], ""), {
         cacheControl: "3600",
         upsert: false,
       });
     const { data: videoData, error: videoError } = await supabase.storage
       .from("elagro_bucket")
-      .upload(`public/videos/${timestamp}`, videoFile, {
-        cacheControl: "3600",
-        upsert: false,
-      });
+      .upload(
+        `public/videos/${timestamp}`,
+        videoFile ? videoFile : new File([], ""),
+        {
+          cacheControl: "3600",
+          upsert: false,
+        }
+      );
 
     if (error) {
       console.error("Erreur lors de l'upload du PDF:", error);
@@ -100,12 +104,16 @@ export default function InstructorNewCoursePage() {
   };
 
   const getUserConnected = async () => {
-    const data: any = await cookieStore.get("user-connected");
-    if (data) {
-      const decoded = decodeURIComponent(data.value);
+    const basicsInfo = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("user-connected="));
+    if (!basicsInfo) return;
+    const value = basicsInfo.split("=")[1];
+    if (value) {
+      const decoded = decodeURIComponent(value);
       const data2 = JSON.parse(decoded);
       const connectedUser = data2;
-   
+
       const { data: userData, error } = await supabase
         .from("users")
         .select("*")
@@ -115,12 +123,12 @@ export default function InstructorNewCoursePage() {
         setInstructorId(connectedUser.id);
         setInstructorName(connectedUser.name);
         console.log("Utilisateur connecté:", connectedUser);
-      }else{
+      } else {
         setIsSubmitting(true);
         alert("Une erreur est survenue. Veuillez vous reconnecter.");
       }
     } else {
-      console.log("Aucun utilisateur connecté", data);
+      console.log("Aucun utilisateur connecté");
     }
   };
 

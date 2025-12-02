@@ -144,7 +144,7 @@ export default function ProfilePage() {
                   <Avatar className="w-20 h-20">
                     <AvatarImage src={user.avatar} alt={user.name} />
                     <AvatarFallback className="bg-gradient-to-br from-[#001A3B] to-[#E0AB6C] text-white text-2xl">
-                      {user.name.split(" ").map((n) => n[0]).join("")}
+                      {user.name.split(" ").map((n:any) => n[0]).join("")}
                     </AvatarFallback>
                   </Avatar>
                   <div>

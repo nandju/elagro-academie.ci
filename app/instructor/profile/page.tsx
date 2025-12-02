@@ -60,10 +60,12 @@ export default function InstructorProfilePage() {
 
 
   const getInstructorData = async () => {
-    const basicsInfo = await cookieStore.get("user-connected")
-    if(!basicsInfo) return
-    const value:any = basicsInfo.value
-    const decoded = decodeURIComponent(value);
+    const basicsInfo = document.cookie
+  .split('; ')
+  .find(row => row.startsWith('user-connected='));
+if (!basicsInfo) return;
+const value = basicsInfo.split('=')[1];
+const decoded = decodeURIComponent(value);
     const data = JSON.parse(decoded);
     console.log(data)
    const {data: instructorData, error} =  await supabase.from("users").select("*").eq("id", data.id)

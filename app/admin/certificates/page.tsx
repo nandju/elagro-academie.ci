@@ -300,14 +300,14 @@ const generateCertificatePDF = (certificate: any) => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {certificates.map((certificate) => (
+              {certificates.map((certificate):any => (
                 <div
                   key={certificate.id}
                   className="flex items-center gap-4 p-4 rounded-lg border border-[#E0AB6C]/20 hover:bg-[#001A3B]/5 transition-colors"
                 >
                   <Avatar className="w-12 h-12">
                     <AvatarFallback className="bg-gradient-to-br from-[#001A3B] to-[#E0AB6C] text-white">
-                      {certificate.studentName.split(" ").map((n) => n[0]).join("")}
+                      {certificate.studentName.split(" ").map((n:any) => n[0]).join("")}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">

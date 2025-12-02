@@ -60,9 +60,11 @@ export default function ReportsPage() {
 
 
   const getAllData = async () => {
-      const basicsInfo = await cookieStore.get("user-connected")
-    if(!basicsInfo) return
-    const value:any = basicsInfo.value
+      const basicsInfo = document.cookie
+  .split('; ')
+  .find(row => row.startsWith('user-connected='));
+if (!basicsInfo) return;
+const value = basicsInfo.split('=')[1];
     const decoded = decodeURIComponent(value);
     const datas = JSON.parse(decoded);
     const {data, error} = await supabase

@@ -63,7 +63,7 @@ export function DashboardHeader() {
                 <Avatar className="w-8 h-8">
                   <AvatarImage src={user.avatar} alt={user.name} />
                   <AvatarFallback className="bg-gradient-to-br from-[#001A3B] to-[#E0AB6C] text-white">
-                    {user.name.split(" ").map((n) => n[0]).join("")}
+                    {user.name.split(" ").map((n:any) => n[0]).join("")}
                   </AvatarFallback>
                 </Avatar>
                 <span className="hidden lg:block font-medium text-[#001A3B]">
