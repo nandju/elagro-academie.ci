@@ -12,9 +12,9 @@ export const metadata = {
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div>
-        <NavbarAuth/>
+        {/* <NavbarAuth/> */}
         {children}
-        <FooterAuth/>
+        {/* <FooterAuth/> */}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react"
+import { ChevronLeft, ChevronRight, Star } from "lucide-react"
 
 type Testimonial = {
   title: string
@@ -8,6 +8,8 @@ type Testimonial = {
   author: string
   role: string
   image: string
+  rating: number
+  tags: string[]
 }
 
 export default function TestimonialsLandingPage() {
@@ -22,7 +24,9 @@ export default function TestimonialsLandingPage() {
         "Je voulais laisser un avis car leur support m'a aidé en moins d'une journée, c'est exceptionnel ! Merci et 5 étoiles !",
       author: "Jean Kouassi",
       role: "Éleveur, Abidjan",
-      image: "JK"
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      rating: 5.0,
+      tags: ["Élevage", "Support", "Qualité"]
     },
     {
       title: "Formations Complètes",
@@ -30,14 +34,18 @@ export default function TestimonialsLandingPage() {
         "Elagro Academy mérite 5 étoiles pour la qualité des formations, la flexibilité et le service de support excellent !",
       author: "Marie Diallo",
       role: "Agricultrice, Dakar",
-      image: "MD"
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
+      rating: 5.0,
+      tags: ["Agriculture", "Formation", "Flexibilité"]
     },
     {
       title: "Support Client",
       quote: "Très bon support, rapide et efficace pendant la semaine. Ils savent exactement ce dont vous avez besoin.",
       author: "Amadou Traoré",
       role: "Conseiller Agricole, Bamako",
-      image: "AT"
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      rating: 5.0,
+      tags: ["Conseil", "Support", "Efficacité"]
     },
     {
       title: "Expérience Remarquable",
@@ -45,7 +53,9 @@ export default function TestimonialsLandingPage() {
         "La plateforme est intuitive et facile à utiliser. J'ai trouvé exactement ce que je cherchais en quelques minutes !",
       author: "Fatou Sow",
       role: "Étudiante, Ouagadougou",
-      image: "FS"
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+      rating: 5.0,
+      tags: ["Plateforme", "Intuitif", "Facilité"]
     },
     {
       title: "Meilleur Investissement",
@@ -53,7 +63,9 @@ export default function TestimonialsLandingPage() {
         "Ça vaut chaque centime ! Les cours sont complets et les formateurs sont des professionnels de haut niveau.",
       author: "Ibrahim Ba",
       role: "Éleveur, Niamey",
-      image: "IB"
+      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+      rating: 5.0,
+      tags: ["Investissement", "Professionnels", "Qualité"]
     },
   ]
 
@@ -123,16 +135,47 @@ export default function TestimonialsLandingPage() {
   }, [currentIndex, maxIndex])
 
   return (
-    <section className="py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white">
+    <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-[#001A3B]">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-12 md:mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#001A3B] mb-4">
-            Ce Que Disent Nos Apprenants
+          {/* Label */}
+          <div className="inline-flex items-center justify-center mb-4">
+            <span className="px-4 py-1.5 rounded-full bg-[#001A3B] border border-white/20 text-white text-xs md:text-sm font-medium uppercase tracking-wider">
+              Nos Apprenants
+            </span>
+          </div>
+          
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+            Nos Histoires de Réussite
           </h2>
-          <p className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto">
-            Solution complète pour la formation et le conseil en élevage et agriculture. Nos apprenants apprécient Elagro Academy pour la qualité de nos formations et l'expertise de nos instructeurs.
+          <p className="text-gray-300 text-base md:text-lg max-w-2xl mx-auto">
+            Des leaders partagent comment ils ont transformé leurs compétences et boosté leur carrière avec nos solutions de formation en élevage et agriculture.
           </p>
+        </div>
+
+        {/* User Avatars Row */}
+        <div className="flex justify-center gap-3 md:gap-4 mb-12 overflow-x-auto pb-4">
+          {testimonials.map((testimonial, i) => (
+            <div
+              key={i}
+              className="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-full border-2 border-white/30 overflow-hidden cursor-pointer hover:border-[#E0AB6C] transition-all"
+              onClick={() => goToSlide(i)}
+            >
+              <img
+                src={testimonial.image}
+                alt={testimonial.author}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  target.style.display = 'none'
+                  if (target.parentElement) {
+                    target.parentElement.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-[#E0AB6C] to-[#E0AB6C]/80 flex items-center justify-center text-white font-bold text-sm">${testimonial.author.split(' ').map(n => n[0]).join('')}</div>`
+                  }
+                }}
+              />
+            </div>
+          ))}
         </div>
 
         {/* Testimonials Carousel Container */}
@@ -153,12 +196,15 @@ export default function TestimonialsLandingPage() {
               {testimonials.map((testimonial, i) => (
                 <div 
                   key={i} 
-                  className="flex-shrink-0 px-2"
+                  className="flex-shrink-0 px-2 md:px-3"
                   style={{ 
                     width: `${100 / visibleItems}%`
                   }}
                 >
-                  <TestimonialCard testimonial={testimonial} />
+                  <TestimonialCard 
+                    testimonial={testimonial} 
+                    isActive={i === currentIndex}
+                  />
                 </div>
               ))}
             </div>
@@ -168,31 +214,15 @@ export default function TestimonialsLandingPage() {
           <div className="flex items-center justify-center gap-4 mt-8 md:mt-10">
             <button
               onClick={prevSlide}
-              className="w-12 h-12 rounded-full bg-[#001A3B] text-white flex items-center justify-center hover:bg-[#001A3B]/90 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-12 h-12 rounded-full bg-[#001A3B] border border-white/20 text-white flex items-center justify-center hover:bg-[#001A3B]/80 hover:border-[#E0AB6C]/50 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Témoignage précédent"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            
-            {/* Pagination dots */}
-            <div className="flex justify-center gap-2">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(Math.min(index, maxIndex))}
-                  className={`transition-all rounded-full ${
-                    index === currentIndex 
-                      ? 'bg-[#001A3B] w-8 h-2' 
-                      : 'bg-gray-300 w-2 h-2 hover:bg-[#E0AB6C]'
-                  }`}
-                  aria-label={`Aller au témoignage ${index + 1}`}
-                />
-              ))}
-            </div>
 
             <button
               onClick={nextSlide}
-              className="w-12 h-12 rounded-full bg-[#001A3B] text-white flex items-center justify-center hover:bg-[#001A3B]/90 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-12 h-12 rounded-full bg-[#001A3B] border border-white/20 text-white flex items-center justify-center hover:bg-[#001A3B]/80 hover:border-[#E0AB6C]/50 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Témoignage suivant"
             >
               <ChevronRight className="w-5 h-5" />
@@ -204,41 +234,78 @@ export default function TestimonialsLandingPage() {
   )
 }
 
-function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+function TestimonialCard({ testimonial, isActive = false }: { testimonial: Testimonial, isActive?: boolean }) {
   return (
-    <div className="bg-white border border-[#001A3B]/10 rounded-xl p-6 md:p-8 shadow-sm hover:shadow-md transition-all h-full flex flex-col">
-      {/* Quote Icon */}
-      <div className="mb-4">
-        <div className="w-12 h-12 rounded-full bg-[#001A3B]/5 flex items-center justify-center mb-4">
-          <Quote className="w-6 h-6 text-[#001A3B]" />
+    <div className={`bg-[#001A3B] border rounded-2xl p-6 md:p-8 shadow-lg transition-all h-full flex flex-col relative ${
+      isActive 
+        ? 'border-[#E0AB6C]/50 shadow-[#E0AB6C]/20' 
+        : 'border-white/10'
+    }`}>
+      {/* Top Section */}
+      <div className="flex items-start justify-between mb-4">
+        {/* Left - Business Types Label */}
+        <div className="flex items-center gap-2 text-gray-400 text-xs md:text-sm">
+          <span>★</span>
+          <span>Types de Formation</span>
         </div>
-        <h3 className="text-lg md:text-xl font-bold text-[#001A3B] mb-2">
-          {testimonial.title}
-        </h3>
-        {/* Stars */}
-        <div className="flex gap-1 mb-4">
-          {[...Array(5)].map((_, index) => (
-            <svg key={index} className="w-4 h-4 fill-[#E0AB6C]" viewBox="0 0 20 20">
-              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-            </svg>
-          ))}
+        
+        {/* Right - Avatar */}
+        <div className="w-14 h-14 md:w-16 md:h-16 rounded-full border-2 border-white/20 overflow-hidden flex-shrink-0">
+          <img
+            src={testimonial.image}
+            alt={testimonial.author}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement
+              target.style.display = 'none'
+              if (target.parentElement) {
+                target.parentElement.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-[#E0AB6C] to-[#E0AB6C]/80 flex items-center justify-center text-white font-bold text-sm md:text-base">${testimonial.author.split(' ').map(n => n[0]).join('')}</div>`
+              }
+            }}
+          />
         </div>
       </div>
 
+      {/* Name and Role */}
+      <div className="mb-3">
+        <h3 className="text-lg md:text-xl font-bold text-white mb-1">
+          {testimonial.author}
+        </h3>
+        <p className="text-sm md:text-base text-gray-400">
+          {testimonial.role}
+        </p>
+      </div>
+
+      {/* Star Rating */}
+      <div className="flex items-center gap-2 mb-4">
+        <div className="flex gap-1">
+          {[...Array(5)].map((_, index) => (
+            <Star
+              key={index}
+              className="w-4 h-4 md:w-5 md:h-5 fill-[#E0AB6C] text-[#E0AB6C]"
+            />
+          ))}
+        </div>
+        <span className="text-[#E0AB6C] font-semibold text-sm md:text-base">
+          {testimonial.rating.toFixed(1)}
+        </span>
+      </div>
+
       {/* Quote Text */}
-      <p className="text-gray-700 text-base md:text-lg mb-6 leading-relaxed flex-grow">
+      <p className="text-gray-300 text-sm md:text-base mb-6 leading-relaxed flex-grow">
         "{testimonial.quote}"
       </p>
 
-      {/* Author Info */}
-      <div className="flex items-center gap-4 pt-4 border-t border-[#001A3B]/10">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#001A3B] to-[#001A3B]/80 flex items-center justify-center text-white font-bold text-base flex-shrink-0 shadow-md">
-          {testimonial.image}
-        </div>
-        <div>
-          <p className="font-semibold text-base text-[#001A3B]">{testimonial.author}</p>
-          <p className="text-sm text-gray-600">{testimonial.role}</p>
-        </div>
+      {/* Tags */}
+      <div className="flex flex-wrap gap-2 pt-4 border-t border-white/10">
+        {testimonial.tags.map((tag, index) => (
+          <span
+            key={index}
+            className="px-3 py-1 rounded-full bg-[#001A3B] border border-white/10 text-white text-xs md:text-sm font-medium"
+          >
+            {tag}
+          </span>
+        ))}
       </div>
     </div>
   )

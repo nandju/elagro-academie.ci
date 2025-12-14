@@ -5,6 +5,9 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { TranslationProvider } from "@/lib/translation-context";
 import PageWrapper from "@/components/loader-page/page-wrapper";
+import BannerLandingPage from "@/components/landing-page/banner/banner";
+import HeaderLandingPage from "@/components/landing-page/header/header";
+import ElagroFooter from "@/components/landing-page/footer/footer";
 // import Footer from "@/components/footer";
 // import Navbar from "@/components/navbar";
 
@@ -68,7 +71,10 @@ export default function RootLayout({
           <div className="max-w-screen-2xl mx-auto" style={{ fontFamily: 'var(--poppins), system-ui, sans-serif' }}>
           <PageWrapper>
               {/* <Navbar /> */}
+                <BannerLandingPage />
+                <HeaderLandingPage />
                {children}
+                <ElagroFooter />
                {/* <Footer /> */}
                <Toaster />
           </PageWrapper>

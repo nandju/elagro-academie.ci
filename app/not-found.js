@@ -26,7 +26,7 @@ export default function NotFound() {
       </p>
 
       {/* Bouton de retour */}
-      <Link href="/" passHref>
+      <Link  href="/" passHref>
         <Button
           as="a"
           className="px-4 py-2 text-sm font-semibold bg-[#001A3B] hover:bg-[#001A3B]/90 text-white rounded-lg transition-colors shadow-sm"

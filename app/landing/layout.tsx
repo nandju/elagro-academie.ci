@@ -1,5 +1,6 @@
 // app/auth/layout.tsx
 import BannerLandingPage from "@/components/landing-page/banner/banner";
+import ElagroFooter from "@/components/landing-page/footer/footer";
 import FooterLandingPage from "@/components/landing-page/footer/footer";
 import HeaderLandingPage from "@/components/landing-page/header/header";
 import React from "react";
@@ -16,7 +17,7 @@ export default function LandingLayout({ children }: { children: ReactNode }) {
       <BannerLandingPage />
       <HeaderLandingPage />
         {children}
-        <FooterLandingPage />
+        <ElagroFooter />
     </div>
   );
 }
