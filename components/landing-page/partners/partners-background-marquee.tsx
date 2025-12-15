@@ -12,16 +12,13 @@ const partners = [
   { name: "FAO", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/FAO_logo.svg/langfr-300px-FAO_logo.svg.png" },
 ]
 
-const firstRow = partners.slice(0, Math.ceil(partners.length / 2))
-const secondRow = partners.slice(Math.ceil(partners.length / 2))
-
 function LogoBg({ image, name }: any) {
   return (
-    <div className="w-40 h-24 flex items-center justify-center">
+    <div className="w-44 h-28 flex items-center justify-center">
       <img
         src={image}
         alt={name}
-        className="w-full h-full object-contain opacity-40 grayscale"
+        className="w-full h-full object-contain opacity-65 grayscale"
       />
     </div>
   )
@@ -31,25 +28,33 @@ export function PartnersBackgroundMarquee() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
 
-      {/* Overlay blur */}
-      <div className="absolute inset-0 backdrop-blur-sm bg-white/60 z-10" />
+      {/* Overlay pour lisibilité */}
+      <div className="absolute inset-0 backdrop-blur-[2px] bg-white/40 z-10" />
 
-      {/* Marquee layer */}
-      <div className="relative z-0 flex flex-col gap-10 py-20">
-
-        <Marquee className="[--duration:25s]">
-          {firstRow.map((p, i) => (
-            <LogoBg key={i} {...p} />
-          ))}
-        </Marquee>
-
-        <Marquee reverse className="[--duration:30s]">
-          {secondRow.map((p, i) => (
-            <LogoBg key={i} {...p} />
-          ))}
-        </Marquee>
-
+      {/* Zone oblique SURDIMENSIONNÉE */}
+      <div
+        className="
+          absolute inset-[-40%]
+          z-0
+          flex flex-col gap-14
+          rotate-[-12deg]
+        "
+      >
+        {/* On répète autant de lignes que nécessaire */}
+        {[...Array(5)].map((_, index) => (
+          <Marquee
+            key={index}
+            reverse={index % 2 === 1}
+            className="[--duration:28s]"
+          >
+            {partners.map((p, i) => (
+              <LogoBg key={i} {...p} />
+            ))}
+          </Marquee>
+        ))}
       </div>
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-background"></div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-background"></div> 
     </div>
   )
 }
