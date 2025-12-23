@@ -28,29 +28,49 @@ export default function HeaderLandingPage() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
-            <Link
-              href="/categories"
-              className="flex items-center gap-1 text-sm font-medium text-[#001A3B] hover:text-[#E0AB6C] transition-colors group"
-            >
-              Catégories
-              <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
-            </Link>
+            <nav className="hidden lg:flex items-center gap-8">
 
-            <Link
-              href="/formations"
-              className="text-sm font-medium text-[#001A3B] hover:text-[#E0AB6C] transition-colors"
-            >
-              Formations
-            </Link>
+              {/* Catégories Dropdown */}
+              <div className="relative group">
+                <button
+                  className="flex items-center gap-1 text-sm font-medium text-[#001A3B] hover:text-[#E0AB6C] transition-colors"
+                >
+                  Catégories
+                  <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform" />
+                </button>
 
-            <Link
-              href="/conseil"
-              className="text-sm font-medium text-[#001A3B] hover:text-[#E0AB6C] transition-colors"
-            >
-              Conseil
-            </Link>
-          </nav>
+                {/* Dropdown */}
+                <div className="absolute left-0 mt-3 w-44 bg-white border border-[#001A3B]/10 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <Link
+                    href="/agriculture"
+                    className="block px-4 py-2.5 text-sm hover:bg-[#001A3B]/5"
+                  >
+                    🌱 Agriculture
+                  </Link>
+                  <Link
+                    href="/elevage"
+                    className="block px-4 py-2.5 text-sm hover:bg-[#001A3B]/5"
+                  >
+                    🐓 Élevage
+                  </Link>
+                </div>
+              </div>
+
+              <Link
+                href="/courses"
+                className="text-sm font-medium text-[#001A3B] hover:text-[#E0AB6C]"
+              >
+                Formations
+              </Link>
+
+              <Link
+                href="/conseil"
+                className="text-sm font-medium text-[#001A3B] hover:text-[#E0AB6C]"
+              >
+                Conseil
+              </Link>
+            </nav>
+
 
           {/* Search Bar - Desktop */}
           <div className="hidden lg:flex items-center gap-2 bg-[#001A3B]/5 rounded-lg px-4 py-2.5 flex-1 max-w-md border border-[#001A3B]/10">
@@ -128,15 +148,35 @@ export default function HeaderLandingPage() {
         {isOpen && (
           <div className="lg:hidden pb-4 space-y-1 border-t border-[#001A3B]/10 pt-4">
 
-            <Link href="/categories" className="block px-4 py-2.5 text-sm font-medium hover:bg-[#001A3B]/5 rounded-lg">
+            <div className="px-4 text-sm font-semibold text-[#001A3B]/70">
               Catégories
+            </div>
+
+            <Link
+              href="/agriculture"
+              className="block px-6 py-2.5 text-sm hover:bg-[#001A3B]/5 rounded-lg"
+            >
+              🌱 Agriculture
             </Link>
 
-            <Link href="/formations" className="block px-4 py-2.5 text-sm font-medium hover:bg-[#001A3B]/5 rounded-lg">
+            <Link
+              href="/elevage"
+              className="block px-6 py-2.5 text-sm hover:bg-[#001A3B]/5 rounded-lg"
+            >
+              🐓 Élevage
+            </Link>
+
+            <Link
+              href="/courses"
+              className="block px-4 py-2.5 text-sm font-medium hover:bg-[#001A3B]/5 rounded-lg"
+            >
               Formations
             </Link>
 
-            <Link href="/conseil" className="block px-4 py-2.5 text-sm font-medium hover:bg-[#001A3B]/5 rounded-lg">
+            <Link
+              href="/conseil"
+              className="block px-4 py-2.5 text-sm font-medium hover:bg-[#001A3B]/5 rounded-lg"
+            >
               Conseil
             </Link>
 
@@ -151,6 +191,7 @@ export default function HeaderLandingPage() {
             </div>
           </div>
         )}
+
       </div>
     </header>
   )
