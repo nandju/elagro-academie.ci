@@ -64,10 +64,10 @@ export default function HeaderLandingPage() {
               </Link>
 
               <Link
-                href="/conseil"
+                href="/contact"
                 className="text-sm font-medium text-[#001A3B] hover:text-[#E0AB6C]"
               >
-                Conseil
+                Contact
               </Link>
             </nav>
 
@@ -93,13 +93,12 @@ export default function HeaderLandingPage() {
               <Search className="w-5 h-5" />
             </button>
 
-            {/* Cart */}
+            {/* Courses Link */}
             <Link
-              href="/panier"
+              href="/courses"
               className="relative p-2 text-[#001A3B] hover:text-[#E0AB6C] hover:bg-[#001A3B]/5 rounded-lg"
             >
               <ShoppingCart className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-[#E0AB6C] rounded-full" />
             </Link>
 
             {/* Auth Desktop */}
@@ -174,10 +173,10 @@ export default function HeaderLandingPage() {
             </Link>
 
             <Link
-              href="/conseil"
+              href="/contact"
               className="block px-4 py-2.5 text-sm font-medium hover:bg-[#001A3B]/5 rounded-lg"
             >
-              Conseil
+              Contact
             </Link>
 
             <div className="flex flex-col gap-2 pt-4 border-t border-[#001A3B]/10">

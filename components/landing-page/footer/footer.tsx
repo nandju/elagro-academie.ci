@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronRight, Globe, Loader2, CheckCircle2, AlertCircle, X, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface ToastItem {
   id: number;
@@ -266,10 +267,10 @@ export default function ElagroFooter() {
           <div>
             <h4 className="font-semibold mb-6 text-white">{t.navigate}</h4>
             <ul className="space-y-3 text-sm">
-              <li><a href="#" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.courses}</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.browse}</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.allAccess}</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.login}</a></li>
+              <li><Link href="/courses" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.courses}</Link></li>
+              <li><Link href="/agriculture" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.browse}</Link></li>
+              <li><Link href="/pricing" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.allAccess}</Link></li>
+              <li><Link href="/login" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.login}</Link></li>
             </ul>
           </div>
 
@@ -277,9 +278,8 @@ export default function ElagroFooter() {
           <div>
             <h4 className="font-semibold mb-6 text-white">{t.company}</h4>
             <ul className="space-y-3 text-sm">
-              <li><a href="#" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.about}</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.contact}</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.wallOfLove}</a></li>
+              <li><Link href="/" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.about}</Link></li>
+              <li><Link href="/contact" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.contact}</Link></li>
             </ul>
           </div>
 
@@ -287,9 +287,8 @@ export default function ElagroFooter() {
           <div>
             <h4 className="font-semibold mb-6 text-white">{t.misc}</h4>
             <ul className="space-y-3 text-sm">
-              <li><a href="#" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.privacy}</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.faqs}</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.waitlist}</a></li>
+              <li><Link href="/privacy" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.privacy}</Link></li>
+              <li><Link href="/support" className="text-gray-400 hover:text-[#E0AB6C] transition-colors">{t.faqs}</Link></li>
             </ul>
           </div>
 
@@ -316,9 +315,9 @@ export default function ElagroFooter() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
           <p>{t.copyright}</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-[#E0AB6C] transition-colors">{t.privacy}</a>
+            <Link href="/privacy" className="hover:text-[#E0AB6C] transition-colors">{t.privacy}</Link>
             <span className="text-gray-600">|</span>
-            <p>{t.recaptcha} <a href="#" className="text-[#E0AB6C] hover:underline">{t.privacy_link}</a></p>
+            <p>{t.recaptcha} <Link href="/privacy" className="text-[#E0AB6C] hover:underline">{t.privacy_link}</Link></p>
           </div>
         </div>
       </div>

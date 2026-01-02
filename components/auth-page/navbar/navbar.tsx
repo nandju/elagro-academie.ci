@@ -33,34 +33,7 @@ export function NavbarAuth() {
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="gap-2 border border-[#E0AB6C]/30 bg-[#001A3B]/10 backdrop-blur-sm hover:bg-[#001A3B]/20 text-[#FFFFFF]"
-            >
-              <Globe className="h-4 w-4 text-[#E0AB6C]" />
-              <span className="font-medium md:block hidden">{language === "fr" ? "Français" : "English"}</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-[#001A3B]/95 backdrop-blur-sm border-[#E0AB6C]/30">
-            <DropdownMenuItem 
-              onClick={() => setLanguage("fr")} 
-              className="cursor-pointer text-[#FFFFFF] hover:bg-[#E0AB6C]/20 focus:bg-[#E0AB6C]/20"
-            >
-              Français
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              onClick={() => setLanguage("en")} 
-              className="cursor-pointer text-[#FFFFFF] hover:bg-[#E0AB6C]/20 focus:bg-[#E0AB6C]/20"
-            >
-              English
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+
     </nav>
   )
 }

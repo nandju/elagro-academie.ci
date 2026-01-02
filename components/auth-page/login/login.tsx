@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ChevronRight, Loader2, CheckCircle2, AlertCircle, X, Eye, EyeOff } from "lucide-react"
@@ -137,13 +138,13 @@ function LoginForm() {
 
       {/* Forgot Password */}
       <div className="text-center">
-        <a 
-          href="#" 
+        <Link 
+          href="/forgot-password" 
           className="text-sm transition-colors hover:underline"
           style={{ color: '#E0AB6C' }}
         >
           Mot de passe oublié ?
-        </a>
+        </Link>
       </div>
 
       {/* Remember Me */}
@@ -164,13 +165,13 @@ function LoginForm() {
       {/* Sign Up Link */}
       <div className="pt-4 text-center text-sm text-gray-400">
         Première visite ?{" "}
-        <a 
+        <Link 
           href="/register" 
           className="font-semibold transition-colors hover:underline"
           style={{ color: '#E0AB6C' }}
         >
           Inscrivez-vous maintenant
-        </a>
+        </Link>
       </div>
 
       {/* reCAPTCHA Notice */}
@@ -215,7 +216,7 @@ export function LoginSection() {
       </div>
 
       {/* Bottom gradient fade */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#001A3B] to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black to-transparent" />
     </section>
   )
 }

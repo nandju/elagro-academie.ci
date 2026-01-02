@@ -6,8 +6,27 @@ export default function SupportPage() {
   return (
     <main className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#001A3B] to-[#1a3a5f] text-white py-16 md:py-24">
-        <div className="container mx-auto px-4 text-center">
+      <section className="relative text-white py-16 md:py-24">
+        {/* Image pour mobile */}
+        <div 
+          className="md:hidden absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80')"
+          }}
+        />
+        
+        {/* Image pour desktop */}
+        <div 
+          className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920&q=80')"
+          }}
+        />
+        
+        {/* Overlay avec les codes couleurs */}
+        <div className="absolute inset-0 bg-[#001A3B]/80" />
+        
+        <div className="relative container mx-auto px-4 text-center z-10">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Centre d'Aide</h1>
           <p className="text-xl text-gray-200 max-w-3xl mx-auto">
             Trouvez des réponses à vos questions ou contactez notre équipe de support
@@ -32,9 +51,9 @@ export default function SupportPage() {
       {/* FAQ Section */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold text-[#001A3B] mb-8">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-[#001A3B] mb-8 text-center">Questions fréquentes</h2>
           
-          <div className="space-y-4 max-w-4xl">
+          <div className="space-y-4 max-w-4xl mx-auto">
             {[
               {
                 question: "Comment créer un compte ?",
@@ -185,6 +204,8 @@ export default function SupportPage() {
           </div>
         </div>
       </section>
+
+
     </main>
   )
 }

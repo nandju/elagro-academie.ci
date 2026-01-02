@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ChevronRight, Loader2, CheckCircle2, AlertCircle, X } from "lucide-react"
@@ -214,13 +215,13 @@ export function RegisterSection() {
             {/* Login Link */}
             <div className="pt-4 text-center text-sm text-gray-400">
               Vous avez déjà un compte ?{" "}
-              <a 
-                href="#" 
+              <Link 
+                href="/login" 
                 className="font-semibold transition-colors hover:underline"
                 style={{ color: '#E0AB6C' }}
               >
                 Connectez-vous
-              </a>
+              </Link>
             </div>
 
             {/* reCAPTCHA Notice */}
@@ -239,7 +240,7 @@ export function RegisterSection() {
       </div>
 
       {/* Bottom gradient fade */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#001A3B] to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black to-transparent" />
     </section>
   )
 }

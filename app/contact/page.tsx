@@ -6,8 +6,24 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#001A3B] to-[#1a3a5f] text-white py-16 md:py-24">
-        <div className="container mx-auto px-4 text-center">
+      <section 
+        className="relative text-white py-16 md:py-24 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80')"
+        }}
+      >
+        {/* Image pour desktop */}
+        <div 
+          className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1920&q=80')"
+          }}
+        />
+        
+        {/* Overlay avec les codes couleurs */}
+        <div className="absolute inset-0 bg-[#001A3B]/80" />
+        
+        <div className="relative container mx-auto px-4 text-center z-10">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Contactez-nous</h1>
           <p className="text-xl text-gray-200 max-w-3xl mx-auto">
             Notre équipe est à votre écoute pour répondre à toutes vos questions
@@ -179,14 +195,33 @@ export default function ContactPage() {
       </section>
       
       {/* CTA Section */}
-      <section className="py-16 bg-[#001A3B] text-white">
-        <div className="container mx-auto px-4 text-center">
+      <section className="relative py-16 text-white">
+        {/* Image pour mobile */}
+        <div 
+          className="md:hidden absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80')"
+          }}
+        />
+        
+        {/* Image pour desktop */}
+        <div 
+          className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1920&q=80')"
+          }}
+        />
+        
+        {/* Overlay avec les codes couleurs */}
+        <div className="absolute inset-0 bg-[#001A3B]/85" />
+        
+        <div className="relative container mx-auto px-4 text-center z-10">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Vous avez des questions ?</h2>
           <p className="text-xl text-gray-200 mb-8 max-w-3xl mx-auto">
             Notre équipe est disponible pour vous aider du lundi au vendredi de 8h à 18h.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="outline" className="border-white text-white hover:bg-white/10 px-8 py-6 text-lg">
+          <Button variant="outline" className="border-white/10 bg-white/10 text-white hover:bg-white/20 px-8 py-6 text-lg">
               <Phone className="w-5 h-5 mr-2" />
               Nous appeler
             </Button>
