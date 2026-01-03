@@ -64,10 +64,10 @@ export default function HeaderLandingPage() {
               </Link>
 
               <Link
-                href="/contact"
+                href="/communaute"
                 className="text-sm font-medium text-[#001A3B] hover:text-[#E0AB6C]"
               >
-                Contact
+                Communauté
               </Link>
             </nav>
 
@@ -173,10 +173,10 @@ export default function HeaderLandingPage() {
             </Link>
 
             <Link
-              href="/contact"
+              href="/communaute"
               className="block px-4 py-2.5 text-sm font-medium hover:bg-[#001A3B]/5 rounded-lg"
             >
-              Contact
+              Communauté
             </Link>
 
             <div className="flex flex-col gap-2 pt-4 border-t border-[#001A3B]/10">
