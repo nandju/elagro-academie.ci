@@ -9,14 +9,14 @@ export default function ContactPage() {
       <section 
         className="relative text-white py-16 md:py-24 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80')"
+          backgroundImage: "url('/assets/images/backgrounds/background_contact_mobile.png')"
         }}
       >
         {/* Image pour desktop */}
         <div 
           className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1920&q=80')"
+            backgroundImage: "url('/assets/images/backgrounds/background_contact_desktop&tablette.png')"
           }}
         />
         
@@ -200,7 +200,7 @@ export default function ContactPage() {
         <div 
           className="md:hidden absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80')"
+            backgroundImage: "url('/assets/images/backgrounds/background_contact_mobile.png')"
           }}
         />
         
@@ -208,7 +208,7 @@ export default function ContactPage() {
         <div 
           className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1920&q=80')"
+            backgroundImage: "url('/assets/images/backgrounds/background_contact_desktop&tablette.png')"
           }}
         />
         

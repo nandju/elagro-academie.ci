@@ -11,7 +11,7 @@ export default function SupportPage() {
         <div 
           className="md:hidden absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80')"
+            backgroundImage: "url('/assets/images/backgrounds/background_support_mobile.png')"
           }}
         />
         
@@ -19,7 +19,7 @@ export default function SupportPage() {
         <div 
           className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920&q=80')"
+            backgroundImage: "url('/assets/images/backgrounds/background_support_desktop&tablette.png')"
           }}
         />
         

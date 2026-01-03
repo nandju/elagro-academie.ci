@@ -35,7 +35,7 @@ export default function HeroSection() {
 
             <Button
               variant="outline"
-              className="border-[#E0AB6C] text-[#E0AB6C] hover:bg-[#E0AB6C] hover:text-[#001A3B] px-8 py-6 text-lg font-semibold"
+              className="border-[#E0AB6C] text-[#E0AB6C] hover:bg-[#E0AB6C]/60 hover:text-[#001A3B] px-8 py-6 text-lg font-semibold"
             >
               En savoir plus
             </Button>

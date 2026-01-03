@@ -44,7 +44,7 @@ export default function CTASection() {
 
           <Button
             variant="outline"
-            className="border-[#001A3B] text-[#001A3B] hover:bg-[#001A3B] hover:text-[#E0AB6C] px-8 py-6 text-lg font-semibold"
+            className="border-[#001A3B] text-[#001A3B] hover:bg-[#001A3B]/60 hover:text-[#E0AB6C] px-8 py-6 text-lg font-semibold"
           >
             Nous contacter
           </Button>
