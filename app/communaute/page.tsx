@@ -28,8 +28,23 @@ export default function CommunautePage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#001A3B] to-[#001A3B]/90 text-white py-16">
-        <div className="container mx-auto px-4">
+      <section 
+        className="
+          relative
+          text-white
+          py-16 md:py-24
+          bg-[#001A3B]
+          bg-[url('/assets/images/backgrounds/background_communaute_mobile.png')]
+          md:bg-[url('/assets/images/backgrounds/background_communaute_desktop&tablette.png')]
+          bg-cover
+          bg-center
+          bg-no-repeat
+        "
+      >
+        {/* Overlay pour la lisibilité */}
+        <div className="absolute inset-0 bg-[#001A3B]/70" />
+        
+        <div className="relative container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Communauté ELAGRO Academy

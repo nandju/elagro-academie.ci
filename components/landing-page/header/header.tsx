@@ -95,7 +95,7 @@ export default function HeaderLandingPage() {
 
             {/* Courses Link */}
             <Link
-              href="/courses"
+              href="/shop"
               className="relative p-2 text-[#001A3B] hover:text-[#E0AB6C] hover:bg-[#001A3B]/5 rounded-lg"
             >
               <ShoppingCart className="w-5 h-5" />

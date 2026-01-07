@@ -30,18 +30,22 @@ const topicsData: Record<string, Array<{ id: string; name: string; description: 
   ]
 }
 
-const categoryInfo: Record<string, { title: string; icon: string; description: string; color: string }> = {
+const categoryInfo: Record<string, { title: string; icon: string; description: string; color: string; bgMobile: string; bgDesktop: string }> = {
   agriculture: {
     title: "Agriculture",
     icon: "🌱",
     description: "Posez vos questions sur les cultures, les techniques agricoles et les meilleures pratiques",
-    color: "from-green-500 to-green-600"
+    color: "from-green-500 to-green-600",
+    bgMobile: "/assets/images/backgrounds/background_mobile.png",
+    bgDesktop: "/assets/images/backgrounds/background_desktop&tablette.png"
   },
   elevage: {
     title: "Élevage",
     icon: "🐓",
     description: "Échangez sur l'élevage, la santé animale et la gestion des troupeaux",
-    color: "from-orange-500 to-orange-600"
+    color: "from-orange-500 to-orange-600",
+    bgMobile: "/assets/images/backgrounds/background_elevage_mobile.png",
+    bgDesktop: "/assets/images/backgrounds/background_elevage_desktop&tablette.png"
   }
 }
 
@@ -55,8 +59,30 @@ export default function CategoriePage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       {/* Header Section */}
-      <section className={`bg-gradient-to-r ${info.color} text-white py-12`}>
-        <div className="container mx-auto px-4">
+      <section className="relative text-white py-12 md:py-16">
+        {/* Background images */}
+        <div className="absolute inset-0">
+          {/* Mobile background */}
+          <div
+            className="absolute inset-0 bg-cover bg-center md:hidden"
+            style={{
+              backgroundImage: `url('${info.bgMobile}')`,
+            }}
+          />
+          
+          {/* Tablet & Desktop background */}
+          <div
+            className="absolute inset-0 bg-cover bg-center hidden md:block"
+            style={{
+              backgroundImage: `url('${info.bgDesktop}')`,
+            }}
+          />
+          
+          {/* Overlay pour la lisibilité */}
+          <div className="absolute inset-0 bg-[#001A3B]/70" />
+        </div>
+        
+        <div className="relative container mx-auto px-4">
           <Link 
             href="/communaute"
             className="inline-flex items-center text-white/90 hover:text-white mb-6 transition-colors"

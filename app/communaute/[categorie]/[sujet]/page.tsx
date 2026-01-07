@@ -125,7 +125,7 @@ export default function SujetPage() {
   const [newQuestion, setNewQuestion] = useState({ title: "", content: "" })
 
   const info = sujetInfo[categorie]?.[sujet] || { name: sujet, icon: "💬", description: "Discussions sur ce sujet" }
-  const categoryInfo = categorie === "agriculture" ? { title: "Agriculture", color: "from-green-500 to-green-600" } : { title: "Élevage", color: "from-orange-500 to-orange-600" }
+  const categoryInfo = categorie === "agriculture" ? { title: "Agriculture", color: "from-green-800 to-green-400" } : { title: "Élevage", color: "from-orange-800 to-orange-400" }
 
   // Filtrer les questions
   let filteredQuestions = [...mockQuestions]
